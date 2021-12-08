@@ -1,4 +1,4 @@
-# first_app
+# Clock App
 
 A new Flutter project.
 

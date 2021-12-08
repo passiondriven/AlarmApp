@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -180,174 +181,13 @@ class MyApp extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 5),
-                      HourDial(width: x.maxWidth),
+                      MinDial(width: x.maxWidth),
                     ],
                   ),
                 ],
               ),
             ),
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class HourDial extends StatefulWidget {
-  final double width;
-  static const List _list = [
-    ' ',
-    ' ',
-    ' ',
-    '1',
-    '2',
-    '3',
-    '4',
-    '5',
-    '6',
-    '7',
-    '8',
-    '9',
-    '10',
-    '11',
-    '12',
-    ' ',
-    ' ',
-    ' ',
-  ];
-
-  const HourDial({
-    Key? key,
-    required this.width,
-  }) : super(key: key);
-
-  @override
-  State<HourDial> createState() => _HourDialState();
-}
-
-class _HourDialState extends State<HourDial> {
-  double position = 0;
-  late ScrollController _scrollController;
-  @override
-  void initState() {
-    super.initState();
-    _scrollController = ScrollController();
-    //_scrollController.addListener(_onScrollEvent);
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    // _scrollController.removeListener(_onScrollEvent);
-  }
-
-  int scroll = 0;
-  void _onScrollEvent() {
-    scroll++;
-    print('Scrolling ' + scroll.toString());
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return ShaderMask(
-      shaderCallback: (Rect rect) {
-        return const LinearGradient(
-          begin: Alignment.centerLeft,
-          end: Alignment.centerRight,
-          colors: <Color>[
-            Colors.purple,
-            Colors.transparent,
-            Colors.transparent,
-            Colors.purple,
-          ],
-          stops: [0.02, 0.50, 0.50, 0.98],
-        ).createShader(rect);
-      },
-      blendMode: BlendMode.dstOut,
-      child: Container(
-        alignment: Alignment.center,
-        margin: const EdgeInsets.symmetric(vertical: 5),
-        height: 60,
-        width: widget.width,
-        child: Column(
-          children: <Widget>[
-            /*Expanded(
-              child: ListView(
-                scrollDirection: Axis.horizontal,
-                children: <Widget>[
-                  hourText(' '),
-                  hourText(' '),
-                  hourText(' '),
-                  hourText(' '),
-                  ...callTextObject(),
-                  hourText(' '),
-                  hourText(' '),
-                  hourText(' '),
-                ],
-              ),
-            ),
-            */
-            /*TextButton(
-                onPressed: () {
-                  position += widget.width / 7;
-                  if (position > 730.0) position = 0;
-                  print(position);
-                  _scrollController.animateTo(position,
-                      duration: const Duration(milliseconds: 500),
-                      curve: Curves.decelerate);
-                },
-                child: const Text('Change Position')),
-            */
-            Expanded(
-              child: NotificationListener<ScrollNotification>(
-                onNotification: (scrollNotification) {
-                  if (scrollNotification is ScrollEndNotification) {
-                    scroll++;
-                    print('ENDED  : ' + scroll.toString());
-                  }
-                  return true;
-                },
-                child: ListView.builder(
-                  physics: const BouncingScrollPhysics(),
-                  controller: _scrollController,
-                  itemCount:
-                      HourDial._list.length, //physics: ScrollPhysics(parent),
-                  itemBuilder: (ctx, index) {
-                    return Container(
-                      alignment: Alignment.center,
-                      child: Text(
-                        HourDial._list[index].toString(),
-                        style: GoogleFonts.jost(
-                          fontSize: 20,
-                          color: Colors.white,
-                        ),
-                      ),
-                      height: 30,
-                      width: widget.width / 7,
-                      //decoration: BoxDecoration(
-                      //  border: Border.all(width: 1, color: Colors.yellow),
-                      //),
-                    );
-                  },
-                  scrollDirection: Axis.horizontal,
-                ),
-              ),
-            ),
-            const SizedBox(height: 3),
-            Container(
-              height: 3,
-              width: widget.width,
-              color: Colors.white60,
-            ),
-            Transform.translate(
-              offset: const Offset(0, -8),
-              child: Container(
-                height: 12,
-                width: 4,
-                color: Colors.red,
-              ),
-            ),
-          ],
         ),
       ),
     );
@@ -435,6 +275,270 @@ class LightCircle extends StatelessWidget {
         vertical: 0,
       ),
       alignment: Alignment.topCenter,
+    );
+  }
+}
+
+class HourDial extends StatefulWidget {
+  final double width;
+
+  HourDial({
+    Key? key,
+    required this.width,
+  }) : super(key: key);
+
+  @override
+  State<HourDial> createState() => _HourDialState();
+}
+
+class _HourDialState extends State<HourDial> {
+  late final List _list = [];
+  late double _increment;
+  final ScrollController _scrollController = ScrollController();
+  @override
+  void initState() {
+    super.initState();
+    _increment = widget.width / 7;
+    _list.add(' ');
+    _list.add(' ');
+    _list.add(' ');
+    for (int x = 1; x <= 12; x++) {
+      _list.add(x.toString());
+    }
+    _list.add(' ');
+    _list.add(' ');
+    _list.add(' ');
+    //print('increment : ' + _increment.toString());
+    //_scrollController.addListener(_onScrollEvent);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    // _scrollController.removeListener(_onScrollEvent);
+  }
+
+  bool manualScroll = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return ShaderMask(
+      shaderCallback: (Rect rect) {
+        return const LinearGradient(
+          begin: Alignment.centerLeft,
+          end: Alignment.centerRight,
+          colors: <Color>[
+            Colors.purple,
+            Colors.transparent,
+            Colors.transparent,
+            Colors.purple,
+          ],
+          stops: [0.02, 0.50, 0.50, 0.98],
+        ).createShader(rect);
+      },
+      blendMode: BlendMode.dstOut,
+      child: Container(
+        alignment: Alignment.center,
+        margin: const EdgeInsets.symmetric(vertical: 5),
+        height: 60,
+        width: widget.width,
+        child: Column(
+          children: <Widget>[
+            Expanded(
+              child: NotificationListener<ScrollNotification>(
+                onNotification: (scrollNotification) {
+                  if (scrollNotification is ScrollEndNotification) {
+                    if (manualScroll == false) {
+                      manualScroll = true;
+
+                      var _index =
+                          (_scrollController.position.pixels / _increment)
+                              .round();
+
+                      var _scrollPixel = (_increment * _index).toInt();
+                      Future.delayed(
+                        const Duration(milliseconds: 2),
+                        () => _scrollController
+                            .animateTo(_scrollPixel.toDouble(),
+                                duration: const Duration(milliseconds: 150),
+                                curve: Curves.easeInOut)
+                            .then((value) => manualScroll = false),
+                      );
+                    }
+                  }
+                  return true;
+                },
+                child: ListView.builder(
+                  physics: const BouncingScrollPhysics(),
+                  controller: _scrollController,
+                  itemCount: _list.length, //physics: ScrollPhysics(parent),
+                  itemBuilder: (ctx, index) {
+                    return Container(
+                      alignment: Alignment.center,
+                      child: Text(
+                        _list[index].toString(),
+                        style: GoogleFonts.jost(
+                          fontSize: 20,
+                          color: Colors.white,
+                        ),
+                      ),
+                      height: 30,
+                      width: widget.width / 7,
+                    );
+                  },
+                  scrollDirection: Axis.horizontal,
+                ),
+              ),
+            ),
+            const SizedBox(height: 3),
+            Container(
+              height: 3,
+              width: widget.width,
+              color: Colors.white60,
+            ),
+            Transform.translate(
+              offset: const Offset(0, -8),
+              child: Container(
+                height: 12,
+                width: 4,
+                color: Colors.red,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class MinDial extends StatefulWidget {
+  final double width;
+
+  const MinDial({
+    Key? key,
+    required this.width,
+  }) : super(key: key);
+
+  @override
+  State<MinDial> createState() => _MinDialState();
+}
+
+class _MinDialState extends State<MinDial> {
+  late final List _list = [];
+  late double _increment;
+  final ScrollController _scrollController = ScrollController();
+  @override
+  void initState() {
+    super.initState();
+    _increment = widget.width / 7;
+    _list.add(' ');
+    _list.add(' ');
+    _list.add(' ');
+    for (int x = 0; x < 60; x++) {
+      _list.add(x.toString());
+    }
+    _list.add(' ');
+    _list.add(' ');
+    _list.add(' ');
+    //print('increment : ' + _increment.toString());
+    //_scrollController.addListener(_onScrollEvent);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    // _scrollController.removeListener(_onScrollEvent);
+  }
+
+  bool manualScroll = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return ShaderMask(
+      shaderCallback: (Rect rect) {
+        return const LinearGradient(
+          begin: Alignment.centerLeft,
+          end: Alignment.centerRight,
+          colors: <Color>[
+            Colors.purple,
+            Colors.transparent,
+            Colors.transparent,
+            Colors.purple,
+          ],
+          stops: [0.02, 0.50, 0.50, 0.98],
+        ).createShader(rect);
+      },
+      blendMode: BlendMode.dstOut,
+      child: Container(
+        alignment: Alignment.center,
+        margin: const EdgeInsets.symmetric(vertical: 5),
+        height: 60,
+        width: widget.width,
+        child: Column(
+          children: <Widget>[
+            Expanded(
+              child: NotificationListener<ScrollNotification>(
+                onNotification: (scrollNotification) {
+                  if (scrollNotification is ScrollEndNotification) {
+                    if (manualScroll == false) {
+                      manualScroll = true;
+
+                      var _index =
+                          (_scrollController.position.pixels / _increment)
+                              .round();
+
+                      var _scrollPixel = (_increment * _index).toInt();
+                      Future.delayed(
+                        const Duration(milliseconds: 2),
+                        () => _scrollController
+                            .animateTo(_scrollPixel.toDouble(),
+                                duration: const Duration(milliseconds: 150),
+                                curve: Curves.easeInOut)
+                            .then((value) => manualScroll = false),
+                      );
+                    }
+                  }
+                  return true;
+                },
+                child: ListView.builder(
+                  physics: const BouncingScrollPhysics(),
+                  controller: _scrollController,
+                  itemCount: _list.length, //physics: ScrollPhysics(parent),
+                  itemBuilder: (ctx, index) {
+                    return Container(
+                      alignment: Alignment.center,
+                      child: Text(
+                        _list[index].toString(),
+                        style: GoogleFonts.jost(
+                          fontSize: 20,
+                          color: Colors.white,
+                        ),
+                      ),
+                      height: 30,
+                      width: widget.width / 7,
+                    );
+                  },
+                  scrollDirection: Axis.horizontal,
+                ),
+              ),
+            ),
+            const SizedBox(height: 3),
+            Container(
+              height: 3,
+              width: widget.width,
+              color: Colors.white60,
+            ),
+            Transform.translate(
+              offset: const Offset(0, -8),
+              child: Container(
+                height: 12,
+                width: 4,
+                color: Colors.red,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
