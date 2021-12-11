@@ -21,8 +21,8 @@ Future changeColor() async {
 }
 
 void main() {
-  Paint.enableDithering = true;
   WidgetsFlutterBinding.ensureInitialized();
+  Paint.enableDithering = true;
   SystemChrome.setPreferredOrientations(
     [DeviceOrientation.portraitUp],
   ).then((_) {
@@ -171,7 +171,7 @@ class MyApp extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 5),
-                      HourDial(width: x.maxWidth),
+                      Dial(width: x.maxWidth, start: 1, end: 12),
                       const SizedBox(height: 20),
                       Text(
                         'MINUTE',
@@ -181,7 +181,7 @@ class MyApp extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 5),
-                      MinDial(width: x.maxWidth),
+                      Dial(width: x.maxWidth, start: 0, end: 59),
                     ],
                   ),
                 ],
@@ -279,19 +279,23 @@ class LightCircle extends StatelessWidget {
   }
 }
 
-class HourDial extends StatefulWidget {
+class Dial extends StatefulWidget {
   final double width;
+  final int start;
+  final int end;
 
-  HourDial({
+  const Dial({
     Key? key,
     required this.width,
+    required this.start,
+    required this.end,
   }) : super(key: key);
 
   @override
-  State<HourDial> createState() => _HourDialState();
+  State<Dial> createState() => _DialState();
 }
 
-class _HourDialState extends State<HourDial> {
+class _DialState extends State<Dial> {
   late final List _list = [];
   late double _increment;
   final ScrollController _scrollController = ScrollController();
@@ -302,7 +306,7 @@ class _HourDialState extends State<HourDial> {
     _list.add(' ');
     _list.add(' ');
     _list.add(' ');
-    for (int x = 1; x <= 12; x++) {
+    for (int x = widget.start; x <= widget.end; x++) {
       _list.add(x.toString());
     }
     _list.add(' ');
@@ -349,7 +353,9 @@ class _HourDialState extends State<HourDial> {
                 onNotification: (scrollNotification) {
                   if (scrollNotification is ScrollEndNotification) {
                     if (manualScroll == false) {
-                      manualScroll = true;
+                      setState(() {
+                        manualScroll = true;
+                      });
 
                       var _index =
                           (_scrollController.position.pixels / _increment)
@@ -362,139 +368,13 @@ class _HourDialState extends State<HourDial> {
                             .animateTo(_scrollPixel.toDouble(),
                                 duration: const Duration(milliseconds: 150),
                                 curve: Curves.easeInOut)
-                            .then((value) => manualScroll = false),
-                      );
-                    }
-                  }
-                  return true;
-                },
-                child: ListView.builder(
-                  physics: const BouncingScrollPhysics(),
-                  controller: _scrollController,
-                  itemCount: _list.length, //physics: ScrollPhysics(parent),
-                  itemBuilder: (ctx, index) {
-                    return Container(
-                      alignment: Alignment.center,
-                      child: Text(
-                        _list[index].toString(),
-                        style: GoogleFonts.jost(
-                          fontSize: 20,
-                          color: Colors.white,
-                        ),
-                      ),
-                      height: 30,
-                      width: widget.width / 7,
-                    );
-                  },
-                  scrollDirection: Axis.horizontal,
-                ),
-              ),
-            ),
-            const SizedBox(height: 3),
-            Container(
-              height: 3,
-              width: widget.width,
-              color: Colors.white60,
-            ),
-            Transform.translate(
-              offset: const Offset(0, -8),
-              child: Container(
-                height: 12,
-                width: 4,
-                color: Colors.red,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class MinDial extends StatefulWidget {
-  final double width;
-
-  const MinDial({
-    Key? key,
-    required this.width,
-  }) : super(key: key);
-
-  @override
-  State<MinDial> createState() => _MinDialState();
-}
-
-class _MinDialState extends State<MinDial> {
-  late final List _list = [];
-  late double _increment;
-  final ScrollController _scrollController = ScrollController();
-  @override
-  void initState() {
-    super.initState();
-    _increment = widget.width / 7;
-    _list.add(' ');
-    _list.add(' ');
-    _list.add(' ');
-    for (int x = 0; x < 60; x++) {
-      _list.add(x.toString());
-    }
-    _list.add(' ');
-    _list.add(' ');
-    _list.add(' ');
-    //print('increment : ' + _increment.toString());
-    //_scrollController.addListener(_onScrollEvent);
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    // _scrollController.removeListener(_onScrollEvent);
-  }
-
-  bool manualScroll = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return ShaderMask(
-      shaderCallback: (Rect rect) {
-        return const LinearGradient(
-          begin: Alignment.centerLeft,
-          end: Alignment.centerRight,
-          colors: <Color>[
-            Colors.purple,
-            Colors.transparent,
-            Colors.transparent,
-            Colors.purple,
-          ],
-          stops: [0.02, 0.50, 0.50, 0.98],
-        ).createShader(rect);
-      },
-      blendMode: BlendMode.dstOut,
-      child: Container(
-        alignment: Alignment.center,
-        margin: const EdgeInsets.symmetric(vertical: 5),
-        height: 60,
-        width: widget.width,
-        child: Column(
-          children: <Widget>[
-            Expanded(
-              child: NotificationListener<ScrollNotification>(
-                onNotification: (scrollNotification) {
-                  if (scrollNotification is ScrollEndNotification) {
-                    if (manualScroll == false) {
-                      manualScroll = true;
-
-                      var _index =
-                          (_scrollController.position.pixels / _increment)
-                              .round();
-
-                      var _scrollPixel = (_increment * _index).toInt();
-                      Future.delayed(
-                        const Duration(milliseconds: 2),
-                        () => _scrollController
-                            .animateTo(_scrollPixel.toDouble(),
-                                duration: const Duration(milliseconds: 150),
-                                curve: Curves.easeInOut)
-                            .then((value) => manualScroll = false),
+                            .then(
+                              (value) => setState(
+                                () {
+                                  manualScroll = false;
+                                },
+                              ),
+                            ),
                       );
                     }
                   }
