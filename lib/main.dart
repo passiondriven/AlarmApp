@@ -2,14 +2,13 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 const gap = 25.0;
-const handWidth = 2.5;
-const minHandAngle = 8 * pi / 4;
-const hourHandAngle = 2 * pi / 4;
+const handWidth = 1.25;
+const minHandAngle = 8 * pi / 3;
+const hourHandAngle = 5.5 * pi / 4;
 
 Future changeColor() async {
   const style = SystemUiOverlayStyle(
@@ -39,10 +38,6 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       color: const Color(0xFF3A456B),
       debugShowCheckedModeBanner: false,
-      //showPerformanceOverlay: true,
-      //debugShowMaterialGrid: true,
-      //showSemanticsDebugger: true,
-
       home: Scaffold(
         extendBody: true,
         extendBodyBehindAppBar: true,
@@ -55,6 +50,16 @@ class MyApp extends StatelessWidget {
           ),
           elevation: 0,
           backgroundColor: Colors.transparent,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () {},
+          ),
+          actions: [
+            Container(
+                margin: const EdgeInsets.only(right: 20),
+                alignment: Alignment.center,
+                child: const Icon(Icons.menu)),
+          ],
         ),
         body: LayoutBuilder(
           builder: (_, size) => Container(
@@ -90,70 +95,42 @@ class MyApp extends StatelessWidget {
                               height: 350,
                               clipBehavior: Clip.hardEdge,
                               decoration: const BoxDecoration(
-                                //boxShadow: <BoxShadow>[
-                                //  BoxShadow(
-                                //    color: Color(0x30FFFFFF),
-                                //    blurRadius: 3,
-                                //    offset: Offset(-2, -2),
-                                //    spreadRadius: 1,
-                                //  ),
-                                //  BoxShadow(
-                                //    color: Color(0x30000000),
-                                //    blurRadius: 3,
-                                //    offset: Offset(2, 2),
-                                //    spreadRadius: 1,
-                                //  ),
-                                //],
+                                boxShadow: <BoxShadow>[
+                                  BoxShadow(
+                                    color: Color(0x30FFFFFF),
+                                    blurRadius: 1,
+                                    offset: Offset(-1, -1),
+                                    spreadRadius: 0.1,
+                                  ),
+                                  BoxShadow(
+                                    color: Color(0x40000000),
+                                    blurRadius: 1,
+                                    offset: Offset(1, 1),
+                                    spreadRadius: 0.5,
+                                  ),
+                                ],
                                 //color: Colors.transparent,
                                 color: Color(0xFF3A456B),
                                 borderRadius: BorderRadius.all(
                                   Radius.circular(350 / 2),
                                 ),
                               ),
-                              child: LayoutBuilder(builder: (_, constaint) {
+                              child: LayoutBuilder(builder: (_, constraint) {
                                 return Stack(
-                                  children: [
+                                  children: <Widget>[
+                                    //Moon
+                                    const Moon(),
+                                    const DateStack(),
+                                    //Clock face
                                     const MainCircle(),
                                     const ShadowCircle(), // blue
                                     const LightCircle(), //Minute hand
-                                    Positioned(
-                                      top: 20,
-                                      right: constaint.maxWidth / 2 -
-                                          handWidth / 2,
-                                      child: Transform.rotate(
-                                        origin: Offset(
-                                          0,
-                                          constaint.maxHeight / 4 - 20 / 2,
-                                        ),
-                                        angle: minHandAngle,
-                                        child: Container(
-                                          alignment: Alignment.topCenter,
-                                          height: constaint.maxHeight / 2 - 20,
-                                          width: handWidth,
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                    ),
-                                    //hour hand
-                                    Positioned(
-                                      top: constaint.maxHeight / 2 -
-                                          constaint.maxHeight / 3,
-                                      right: constaint.maxWidth / 2 -
-                                          handWidth / 2,
-                                      child: Transform.rotate(
-                                        origin: Offset(
-                                          0,
-                                          constaint.maxHeight / (3 * 2),
-                                        ),
-                                        angle: hourHandAngle,
-                                        child: Container(
-                                          alignment: Alignment.topCenter,
-                                          height: constaint.maxHeight / 3,
-                                          width: handWidth,
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                    ),
+                                    //hour markers
+                                    const SmallHourMarkers(),
+                                    //Minutes
+                                    MinuteHand(constraint: constraint),
+                                    //Hands
+                                    HourHand(constraint: constraint),
                                   ],
                                 );
                               }),
@@ -167,7 +144,6 @@ class MyApp extends StatelessWidget {
                         'HOUR',
                         style: GoogleFonts.jost(
                           color: Colors.white,
-                          fontSize: 18,
                         ),
                       ),
                       const SizedBox(height: 5),
@@ -177,16 +153,264 @@ class MyApp extends StatelessWidget {
                         'MINUTE',
                         style: GoogleFonts.jost(
                           color: Colors.white,
-                          fontSize: 18,
                         ),
                       ),
                       const SizedBox(height: 5),
                       Dial(width: x.maxWidth, start: 0, end: 59),
+                      Expanded(
+                        child: SizedBox(
+                          height: 25,
+                          width: x.maxWidth,
+                          //decoration: BoxDecoration(color: Colors.red),
+                          child: Row(
+                            children: <Widget>[
+                              Expanded(
+                                child: TextButton(
+                                  onPressed: () {},
+                                  child: Text(
+                                    'CANCEL',
+                                    style:
+                                        GoogleFonts.jost(color: Colors.white),
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                child: TextButton(
+                                  onPressed: () {},
+                                  child: Text(
+                                    'SAVE',
+                                    style: GoogleFonts.jost(
+                                        color: Colors.redAccent),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ],
               ),
             ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class HourHand extends StatelessWidget {
+  final BoxConstraints constraint;
+  const HourHand({
+    Key? key,
+    required this.constraint,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
+      top: constraint.maxHeight / 2 - constraint.maxHeight / 3.5,
+      right: constraint.maxWidth / 2 - handWidth / 2,
+      child: Transform.rotate(
+        origin: Offset(
+          0,
+          constraint.maxHeight / (3.5 * 2),
+        ),
+        angle: hourHandAngle,
+        child: Container(
+          alignment: Alignment.topCenter,
+          height: constraint.maxHeight / 3.5,
+          width: handWidth,
+          color: Colors.white,
+        ),
+      ),
+    );
+  }
+}
+
+class MinuteHand extends StatelessWidget {
+  final BoxConstraints constraint;
+  const MinuteHand({
+    Key? key,
+    required this.constraint,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
+      top: constraint.maxHeight / 2 - constraint.maxHeight / 2.5,
+      right: constraint.maxWidth / 2 - handWidth / 2,
+      child: Transform.rotate(
+        origin: Offset(
+          0,
+          constraint.maxHeight / (2.5 * 2),
+        ),
+        angle: minHandAngle,
+        child: Container(
+          alignment: Alignment.topCenter,
+          height: constraint.maxHeight / 2.5,
+          width: handWidth,
+          color: Colors.white,
+        ),
+      ),
+    );
+  }
+}
+
+class SmallHourMarkers extends StatelessWidget {
+  const SmallHourMarkers({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        //Hour hands (small)
+        Transform.translate(
+          offset: Offset(0, 350 / 2 - 25),
+          child: Center(
+            child: Container(
+              height: 20,
+              width: 1,
+              color: Colors.white30,
+            ),
+          ),
+        ),
+        //Hour hands (small)
+        Transform.translate(
+          offset: Offset(350 / 2 - 25, 0),
+          child: Center(
+            child: Container(
+              height: 1,
+              width: 20,
+              color: Colors.white30,
+            ),
+          ),
+        ),
+        //Hour hands (small)
+        Transform.translate(
+          offset: Offset(-(350 / 2 - 25), 0),
+          child: Center(
+            child: Container(
+              height: 1,
+              width: 20,
+              color: Colors.white30,
+            ),
+          ),
+        ),
+        //Hour hands (small)
+        Transform.translate(
+          offset: Offset(0, -(350 / 2 - 25)),
+          child: Center(
+            child: Container(
+              height: 20,
+              width: 1,
+              color: Colors.white30,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class Moon extends StatelessWidget {
+  const Moon({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Transform.translate(
+      offset: const Offset(0, -(350 / 2 / 2)),
+      child: Center(
+        child: Container(
+          alignment: Alignment.center,
+          height: 36,
+          width: 36,
+          padding: const EdgeInsets.all(2),
+          decoration: BoxDecoration(
+            color: const Color(0xFF3A456B),
+            borderRadius: BorderRadius.circular(36 / 2),
+            boxShadow: const <BoxShadow>[
+              BoxShadow(
+                offset: Offset(-1, -1),
+                color: Color(0x80000000),
+                blurRadius: 1,
+                spreadRadius: 0.3,
+              ),
+              BoxShadow(
+                offset: Offset(1, 1),
+                color: Color(0x30FFFFFF),
+                blurRadius: 1,
+                spreadRadius: 0.3,
+              ),
+            ],
+          ),
+          child: Container(
+            clipBehavior: Clip.hardEdge,
+            decoration: BoxDecoration(
+              color: Colors.redAccent[200],
+              borderRadius: BorderRadius.circular(25 / 2),
+            ),
+            child: Transform.translate(
+              offset: const Offset(10, 0),
+              child: Container(
+                clipBehavior: Clip.hardEdge,
+                height: 25,
+                width: 25,
+                decoration: BoxDecoration(
+                  color: const Color(0xFF3A456B),
+                  borderRadius: BorderRadius.circular(25 / 2),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class DateStack extends StatelessWidget {
+  const DateStack({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Transform.translate(
+      offset: const Offset(0, (350 / 2 / 2)),
+      child: Center(
+        child: Container(
+          alignment: Alignment.center,
+          height: 26,
+          width: 65,
+          padding: const EdgeInsets.all(2),
+          decoration: const BoxDecoration(
+            color: Color(0xFF3A456B),
+            borderRadius: BorderRadius.horizontal(
+                left: Radius.circular(26 / 2), right: Radius.circular(26 / 2)),
+            boxShadow: <BoxShadow>[
+              BoxShadow(
+                offset: Offset(-1, -1),
+                color: Color(0x80000000),
+                blurRadius: 1,
+                spreadRadius: 0.3,
+              ),
+              BoxShadow(
+                offset: Offset(1, 1),
+                color: Color(0x30FFFFFF),
+                blurRadius: 1,
+                spreadRadius: 0.3,
+              ),
+            ],
+          ),
+          child: Text(
+            'MON 9',
+            style: GoogleFonts.jost(color: Colors.white60),
           ),
         ),
       ),
@@ -390,7 +614,7 @@ class _DialState extends State<Dial> {
                       child: Text(
                         _list[index].toString(),
                         style: GoogleFonts.jost(
-                          fontSize: 20,
+                          //fontSize: 20,
                           color: Colors.white,
                         ),
                       ),
