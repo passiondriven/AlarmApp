@@ -84,62 +84,67 @@ class MyApp extends StatelessWidget {
                   Column(
                     children: <Widget>[
                       const SizedBox(height: 100),
+                      // Clock face
+
                       SizedBox(
                         width: x.maxWidth,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                        child: Stack(
                           children: <Widget>[
-                            const Spacer(),
-                            Container(
-                              width: 350,
-                              height: 350,
-                              clipBehavior: Clip.hardEdge,
-                              decoration: const BoxDecoration(
-                                boxShadow: <BoxShadow>[
-                                  BoxShadow(
-                                    color: Color(0x30FFFFFF),
-                                    blurRadius: 1,
-                                    offset: Offset(-1, -1),
-                                    spreadRadius: 0.1,
+                            // main circle
+                            const MainCircle(),
+                            // light cicle
+                            const LightCircle(),
+                            // shadow circle
+                            const ShadowCircle(),
+                            // moon
+                            Center(
+                              child: Container(
+                                  width: 350,
+                                  height: 350,
+                                  decoration: const BoxDecoration(
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(350 / 2),
+                                    ),
+                                    //color: Colors.red,
                                   ),
-                                  BoxShadow(
-                                    color: Color(0x40000000),
-                                    blurRadius: 1,
-                                    offset: Offset(1, 1),
-                                    spreadRadius: 0.5,
+                                  alignment: Alignment.center,
+                                  child: const Moon()),
+                            ),
+                            const MoonInside(),
+
+                            const DateStack(),
+
+                            //hour markers
+                            const SmallHourMarkers(),
+
+                            //Minutes
+                            Center(
+                              child: Container(
+                                height: 350,
+                                width: 350,
+                                decoration: const BoxDecoration(
+                                  //color: Colors.red,
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(350 / 2),
                                   ),
-                                ],
-                                //color: Colors.transparent,
-                                color: Color(0xFF3A456B),
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(350 / 2),
+                                ),
+                                child: LayoutBuilder(
+                                  builder: (context, constraints) {
+                                    return Stack(
+                                      children: [
+                                        MinuteHand(constraint: constraints),
+                                        HourHand(constraint: constraints),
+                                      ],
+                                    );
+                                  },
                                 ),
                               ),
-                              child: LayoutBuilder(builder: (_, constraint) {
-                                return Stack(
-                                  children: <Widget>[
-                                    //Moon
-                                    const Moon(),
-                                    const DateStack(),
-                                    //Clock face
-                                    const MainCircle(),
-                                    const ShadowCircle(), // blue
-                                    const LightCircle(), //Minute hand
-                                    //hour markers
-                                    const SmallHourMarkers(),
-                                    //Minutes
-                                    MinuteHand(constraint: constraint),
-                                    //Hands
-                                    HourHand(constraint: constraint),
-                                  ],
-                                );
-                              }),
                             ),
-                            const Spacer(),
                           ],
                         ),
                       ),
                       const SizedBox(height: 50),
+                      // Heading hour
                       Text(
                         'HOUR',
                         style: GoogleFonts.jost(
@@ -147,8 +152,10 @@ class MyApp extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 5),
-                      Dial(width: x.maxWidth, start: 1, end: 12),
+                      // Hour dial
+                      Dial(width: x.maxWidth, start: 0, end: 23),
                       const SizedBox(height: 20),
+                      // Heading minutes
                       Text(
                         'MINUTE',
                         style: GoogleFonts.jost(
@@ -156,6 +163,7 @@ class MyApp extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 5),
+                      // Minute dial
                       Dial(width: x.maxWidth, start: 0, end: 59),
                       Expanded(
                         child: SizedBox(
@@ -191,6 +199,69 @@ class MyApp extends StatelessWidget {
                     ],
                   ),
                 ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class MoonInside extends StatelessWidget {
+  const MoonInside({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 350,
+      alignment: Alignment.center,
+      child: Transform.translate(
+        offset: const Offset(
+          0,
+          -(350 / 2 / 2),
+        ),
+        child: Center(
+          child: Container(
+            clipBehavior: Clip.hardEdge,
+            alignment: Alignment.center,
+            height: 38,
+            width: 38,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(38 / 2),
+            ),
+            child: Transform.translate(
+              offset: const Offset(0, 0),
+              child: Container(
+                height: 25,
+                width: 25,
+                clipBehavior: Clip.hardEdge,
+                decoration: BoxDecoration(
+                  color: Colors.redAccent[200],
+                  borderRadius: BorderRadius.circular(25 / 2),
+                ),
+                child: Transform.translate(
+                  offset: const Offset(10, 0),
+                  child: Container(
+                    clipBehavior: Clip.hardEdge,
+                    child: ColorFiltered(
+                      colorFilter: const ColorFilter.mode(
+                        Color(0x60000000),
+                        BlendMode.overlay,
+                      ),
+                      child: Container(
+                        decoration: BoxDecoration(
+                            color: const Color(0xFF3A456B),
+                            borderRadius: BorderRadius.circular(28 / 2)),
+                      ),
+                    ),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(28 / 2),
+                    ),
+                  ),
+                ),
               ),
             ),
           ),
@@ -265,53 +336,59 @@ class SmallHourMarkers extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        //Hour hands (small)
-        Transform.translate(
-          offset: Offset(0, 350 / 2 - 25),
-          child: Center(
-            child: Container(
-              height: 20,
-              width: 1,
-              color: Colors.white30,
+    return Center(
+      child: SizedBox(
+        height: 350,
+        width: 350,
+        child: Stack(
+          children: [
+            //Hour hands (small)
+            Transform.translate(
+              offset: Offset(0, 350 / 2 - 25),
+              child: Center(
+                child: Container(
+                  height: 20,
+                  width: 1,
+                  color: Colors.white30,
+                ),
+              ),
             ),
-          ),
-        ),
-        //Hour hands (small)
-        Transform.translate(
-          offset: Offset(350 / 2 - 25, 0),
-          child: Center(
-            child: Container(
-              height: 1,
-              width: 20,
-              color: Colors.white30,
+            //Hour hands (small)
+            Transform.translate(
+              offset: Offset(350 / 2 - 25, 0),
+              child: Center(
+                child: Container(
+                  height: 1,
+                  width: 20,
+                  color: Colors.white30,
+                ),
+              ),
             ),
-          ),
-        ),
-        //Hour hands (small)
-        Transform.translate(
-          offset: Offset(-(350 / 2 - 25), 0),
-          child: Center(
-            child: Container(
-              height: 1,
-              width: 20,
-              color: Colors.white30,
+            //Hour hands (small)
+            Transform.translate(
+              offset: Offset(-(350 / 2 - 25), 0),
+              child: Center(
+                child: Container(
+                  height: 1,
+                  width: 20,
+                  color: Colors.white30,
+                ),
+              ),
             ),
-          ),
-        ),
-        //Hour hands (small)
-        Transform.translate(
-          offset: Offset(0, -(350 / 2 - 25)),
-          child: Center(
-            child: Container(
-              height: 20,
-              width: 1,
-              color: Colors.white30,
+            //Hour hands (small)
+            Transform.translate(
+              offset: Offset(0, -(350 / 2 - 25)),
+              child: Center(
+                child: Container(
+                  height: 20,
+                  width: 1,
+                  color: Colors.white30,
+                ),
+              ),
             ),
-          ),
+          ],
         ),
-      ],
+      ),
     );
   }
 }
@@ -321,51 +398,176 @@ class Moon extends StatelessWidget {
     Key? key,
   }) : super(key: key);
 
-  @override
+  /*@override
   Widget build(BuildContext context) {
     return Transform.translate(
       offset: const Offset(0, -(350 / 2 / 2)),
       child: Center(
-        child: Container(
-          alignment: Alignment.center,
-          height: 36,
-          width: 36,
-          padding: const EdgeInsets.all(2),
-          decoration: BoxDecoration(
-            color: const Color(0xFF3A456B),
-            borderRadius: BorderRadius.circular(36 / 2),
-            boxShadow: const <BoxShadow>[
-              BoxShadow(
-                offset: Offset(-1, -1),
-                color: Color(0x80000000),
-                blurRadius: 1,
-                spreadRadius: 0.3,
-              ),
-              BoxShadow(
-                offset: Offset(1, 1),
-                color: Color(0x30FFFFFF),
-                blurRadius: 1,
-                spreadRadius: 0.3,
-              ),
-            ],
-          ),
-          child: Container(
-            clipBehavior: Clip.hardEdge,
-            decoration: BoxDecoration(
-              color: Colors.redAccent[200],
-              borderRadius: BorderRadius.circular(25 / 2),
-            ),
-            child: Transform.translate(
-              offset: const Offset(10, 0),
+        //main container
+        child: Stack(
+          children: <Widget>[
+            Center(
               child: Container(
-                clipBehavior: Clip.hardEdge,
-                height: 25,
-                width: 25,
                 decoration: BoxDecoration(
                   color: const Color(0xFF3A456B),
-                  borderRadius: BorderRadius.circular(25 / 2),
+                  borderRadius: BorderRadius.circular(36 / 2),
+                  boxShadow: const <BoxShadow>[
+                    BoxShadow(
+                      offset: Offset(-1, -1),
+                      color: Color(0x80000000),
+                      blurRadius: 1,
+                      spreadRadius: 0.3,
+                    ),
+                    BoxShadow(
+                      offset: Offset(1, 1),
+                      color: Color(0x30FFFFFF),
+                      blurRadius: 1,
+                      spreadRadius: 0.3,
+                    ),
+                  ],
+                ),
+                child: Container(
+                  alignment: Alignment.center,
+                  height: 36,
+                  width: 36,
+                  padding: const EdgeInsets.all(2),
+                  decoration: BoxDecoration(
+                    color: const Color(0x60000000),
+                    borderRadius: BorderRadius.circular(36 / 2),
+                  ),
                 ),
               ),
+            ),
+            Center(
+              child: Container(
+                clipBehavior: Clip.hardEdge,
+                decoration: BoxDecoration(
+                  color: Colors.redAccent[200],
+                  borderRadius: BorderRadius.circular(25 / 2),
+                ),
+                child: Transform.translate(
+                  offset: const Offset(10, 0),
+                  child: ColorFiltered(
+                    colorFilter: const ColorFilter.mode(
+                        Color(0x60000000), BlendMode.overlay),
+                    child: Container(
+                      clipBehavior: Clip.hardEdge,
+                      height: 25,
+                      width: 25,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF3A456B),
+                        borderRadius: BorderRadius.circular(25 / 2),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }*/
+  // WORKING SAFE
+/*  @override
+  Widget build(BuildContext context) {
+    return Transform.translate(
+      offset: const Offset(0, -(350 / 2 / 2)),
+      child: Stack(
+        children: [
+          Center(
+            child: Container(
+              clipBehavior: Clip.hardEdge,
+              alignment: Alignment.center,
+              height: 36,
+              width: 36,
+              decoration: BoxDecoration(
+                color: const Color(0xFF3A456B),
+                borderRadius: BorderRadius.circular(36 / 2),
+                boxShadow: const <BoxShadow>[
+                  BoxShadow(
+                    offset: Offset(-1, -1),
+                    color: Color(0x80000000),
+                    blurRadius: 1,
+                    spreadRadius: 0.3,
+                  ),
+                  BoxShadow(
+                    offset: Offset(1, 1),
+                    color: Color(0x30FFFFFF),
+                    blurRadius: 1,
+                    spreadRadius: 0.3,
+                  ),
+                ],
+              ),
+              child: ColorFiltered(
+                colorFilter: const ColorFilter.mode(
+                    Color(0x60000000), BlendMode.overlay),
+                child: Container(
+                  height: 36,
+                  width: 36,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF3A456B),
+                    borderRadius: BorderRadius.circular(36 / 2),
+                    //boxShadow: const <BoxShadow>[
+                    //  BoxShadow(
+                    //    offset: Offset(-1, -1),
+                    //    color: Color(0x80000000),
+                    //    blurRadius: 1,
+                    //    spreadRadius: 0.3,
+                    //  ),
+                    //  BoxShadow(
+                    //    offset: Offset(1, 1),
+                    //    color: Color(0x30FFFFFF),
+                    //    blurRadius: 1,
+                    //    spreadRadius: 0.3,
+                    //  ),
+                    //],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+*/
+  @override
+  Widget build(BuildContext context) {
+    return Transform.translate(
+      offset: const Offset(0, -(350 / 2 / 2)),
+      child: Container(
+        clipBehavior: Clip.hardEdge,
+        alignment: Alignment.center,
+        height: 36,
+        width: 36,
+        decoration: BoxDecoration(
+          color: const Color(0xFF3A456B),
+          borderRadius: BorderRadius.circular(36 / 2),
+          boxShadow: const <BoxShadow>[
+            BoxShadow(
+              offset: Offset(-1, -1),
+              color: Color(0x80000000),
+              blurRadius: 1,
+              spreadRadius: 0.3,
+            ),
+            BoxShadow(
+              offset: Offset(1, 1),
+              color: Color(0x30FFFFFF),
+              blurRadius: 1,
+              spreadRadius: 0.3,
+            ),
+          ],
+        ),
+        child: ColorFiltered(
+          colorFilter:
+              const ColorFilter.mode(Color(0x60000000), BlendMode.overlay),
+          child: Container(
+            height: 36,
+            width: 36,
+            decoration: BoxDecoration(
+              color: const Color(0xFF3A456B),
+              borderRadius: BorderRadius.circular(36 / 2),
             ),
           ),
         ),
@@ -385,32 +587,67 @@ class DateStack extends StatelessWidget {
       offset: const Offset(0, (350 / 2 / 2)),
       child: Center(
         child: Container(
-          alignment: Alignment.center,
-          height: 26,
-          width: 65,
-          padding: const EdgeInsets.all(2),
+          width: 350,
+          height: 350,
           decoration: const BoxDecoration(
-            color: Color(0xFF3A456B),
-            borderRadius: BorderRadius.horizontal(
-                left: Radius.circular(26 / 2), right: Radius.circular(26 / 2)),
-            boxShadow: <BoxShadow>[
-              BoxShadow(
-                offset: Offset(-1, -1),
-                color: Color(0x80000000),
-                blurRadius: 1,
-                spreadRadius: 0.3,
+            borderRadius: BorderRadius.all(
+              Radius.circular(350 / 2),
+            ),
+            //color: Colors.red,
+          ),
+          alignment: Alignment.center,
+          child: Stack(
+            children: [
+              Center(
+                child: Container(
+                  clipBehavior: Clip.hardEdge,
+                  alignment: Alignment.center,
+                  height: 26,
+                  width: 65,
+                  padding: const EdgeInsets.all(2),
+                  decoration: const BoxDecoration(
+                    color: Color(0xFF3A456B),
+                    borderRadius: BorderRadius.horizontal(
+                        left: Radius.circular(26 / 2),
+                        right: Radius.circular(26 / 2)),
+                  ),
+                  child: ColorFiltered(
+                    colorFilter: const ColorFilter.mode(
+                        Color(0x60000000), BlendMode.overlay),
+                    child: Container(
+                      height: double.maxFinite,
+                      width: double.maxFinite,
+                      decoration: const BoxDecoration(
+                        color: Color(0xFF3A456B),
+                        borderRadius: BorderRadius.horizontal(
+                            left: Radius.circular(26 / 2),
+                            right: Radius.circular(26 / 2)),
+                        boxShadow: <BoxShadow>[
+                          BoxShadow(
+                            offset: Offset(-1, -1),
+                            color: Color(0x80000000),
+                            blurRadius: 1,
+                            spreadRadius: 0.3,
+                          ),
+                          BoxShadow(
+                            offset: Offset(1, 1),
+                            color: Color(0x30FFFFFF),
+                            blurRadius: 1,
+                            spreadRadius: 0.3,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
               ),
-              BoxShadow(
-                offset: Offset(1, 1),
-                color: Color(0x30FFFFFF),
-                blurRadius: 1,
-                spreadRadius: 0.3,
+              Center(
+                child: Text(
+                  'MON 9',
+                  style: GoogleFonts.jost(color: Colors.white),
+                ),
               ),
             ],
-          ),
-          child: Text(
-            'MON 9',
-            style: GoogleFonts.jost(color: Colors.white60),
           ),
         ),
       ),
@@ -423,21 +660,47 @@ class MainCircle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: const Color(0x60000000),
-        borderRadius: BorderRadius.circular(250),
-      ),
-      padding: const EdgeInsets.symmetric(
-        horizontal: 30,
-        vertical: 0,
-      ),
-      alignment: Alignment.center,
-      width: 350,
-      height: 350,
-      child: const CircleAvatar(
-        radius: 1.5,
-        backgroundColor: Colors.white,
+    return Center(
+      child: Container(
+        width: 350,
+        height: 350,
+        clipBehavior: Clip.hardEdge,
+        decoration: const BoxDecoration(
+          boxShadow: <BoxShadow>[
+            BoxShadow(
+              color: Color(0x30FFFFFF),
+              blurRadius: 1,
+              offset: Offset(-1, -1),
+              spreadRadius: 0.1,
+            ),
+            BoxShadow(
+              color: Color(0x40000000),
+              blurRadius: 1,
+              offset: Offset(1, 1),
+              spreadRadius: 0.5,
+            ),
+          ],
+          borderRadius: BorderRadius.all(
+            Radius.circular(350 / 2),
+          ),
+        ),
+        alignment: Alignment.center,
+        child: ColorFiltered(
+          colorFilter:
+              const ColorFilter.mode(Color(0x60000000), BlendMode.overlay),
+          child: Container(
+            width: 350,
+            height: 350,
+            alignment: Alignment.center,
+            decoration: const BoxDecoration(
+              color: Color(0xFF3A456B),
+            ),
+            child: const CircleAvatar(
+              radius: 1.5,
+              backgroundColor: Colors.white,
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -448,27 +711,40 @@ class ShadowCircle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.blue,
-        gradient: const RadialGradient(
-          colors: <Color>[
-            Color(0x00000000),
-            Color(0x30000000),
-          ],
-          center: AlignmentDirectional(0.1, 0.1),
-          focal: AlignmentDirectional(0, 0),
-          radius: 0.55,
-          focalRadius: 0,
-          stops: [0.85, 1],
+    return Center(
+      child: Container(
+        width: 350,
+        height: 350,
+        decoration: const BoxDecoration(
+          borderRadius: BorderRadius.all(
+            Radius.circular(350 / 2),
+          ),
+          //color: Colors.red,
         ),
-        borderRadius: BorderRadius.circular(350),
+        alignment: Alignment.center,
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.blue,
+            gradient: const RadialGradient(
+              colors: <Color>[
+                Color(0x00000000),
+                Color(0x30000000),
+              ],
+              center: AlignmentDirectional(0.1, 0.1),
+              focal: AlignmentDirectional(0, 0),
+              radius: 0.55,
+              focalRadius: 0,
+              stops: [0.85, 1],
+            ),
+            borderRadius: BorderRadius.circular(350),
+          ),
+          padding: const EdgeInsets.symmetric(
+            horizontal: 30,
+            vertical: 0,
+          ),
+          alignment: Alignment.topCenter,
+        ),
       ),
-      padding: const EdgeInsets.symmetric(
-        horizontal: 30,
-        vertical: 0,
-      ),
-      alignment: Alignment.topCenter,
     );
   }
 }
@@ -478,27 +754,39 @@ class LightCircle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.red,
-        gradient: const RadialGradient(
-          colors: <Color>[
-            Color(0x00000000),
-            Color(0x20FFFFFF),
-          ],
-          center: AlignmentDirectional(-0.1, -0.1),
-          focal: AlignmentDirectional(0, 0),
-          radius: 0.55,
-          focalRadius: 0,
-          stops: [0.85, 1],
+    return Center(
+      child: Container(
+        width: 350,
+        height: 350,
+        decoration: const BoxDecoration(
+          borderRadius: BorderRadius.all(
+            Radius.circular(350 / 2),
+          ),
         ),
-        borderRadius: BorderRadius.circular(350),
+        alignment: Alignment.center,
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.red,
+            gradient: const RadialGradient(
+              colors: <Color>[
+                Color(0x00000000),
+                Color(0x20FFFFFF),
+              ],
+              center: AlignmentDirectional(-0.1, -0.1),
+              focal: AlignmentDirectional(0, 0),
+              radius: 0.55,
+              focalRadius: 0,
+              stops: [0.85, 1],
+            ),
+            borderRadius: BorderRadius.circular(350),
+          ),
+          padding: const EdgeInsets.symmetric(
+            horizontal: 30,
+            vertical: 0,
+          ),
+          alignment: Alignment.topCenter,
+        ),
       ),
-      padding: const EdgeInsets.symmetric(
-        horizontal: 30,
-        vertical: 0,
-      ),
-      alignment: Alignment.topCenter,
     );
   }
 }
