@@ -30,8 +30,31 @@ void main() {
   });
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
+  var dayTimeDistance = 35.0;
+  late final AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 500),
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -97,26 +120,66 @@ class MyApp extends StatelessWidget {
                             // shadow circle
                             const ShadowCircle(),
                             // moon
+                            const DayTimeSpace(),
+                            // Moon or sun switch
                             Center(
                               child: Container(
-                                  width: 350,
-                                  height: 350,
-                                  decoration: const BoxDecoration(
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(350 / 2),
-                                    ),
-                                    //color: Colors.red,
+                                height: 350,
+                                width: 350,
+                                alignment: Alignment.center,
+                                child: Transform.translate(
+                                  offset: const Offset(
+                                    0,
+                                    -(350 / 2 / 2),
                                   ),
-                                  alignment: Alignment.center,
-                                  child: const Moon()),
+                                  child: TweenAnimationBuilder(
+                                    curve: Curves.easeInOutCubic,
+                                    duration: const Duration(milliseconds: 250),
+                                    tween: Tween<double>(
+                                      begin: -35,
+                                      end: dayTimeDistance,
+                                    ),
+                                    builder: (_, double position, ___) {
+                                      return Stack(
+                                        children: <Widget>[
+                                          Container(
+                                            width: 35,
+                                            height: 35,
+                                            clipBehavior: Clip.hardEdge,
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(35 / 2),
+                                              //color: Colors.red,
+                                            ),
+                                            child: SunInside(
+                                              offset: position - 35,
+                                            ),
+                                            //offset: dayTimeDistance - 35),
+                                          ),
+                                          Container(
+                                            width: 35,
+                                            height: 35,
+                                            clipBehavior: Clip.hardEdge,
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(35 / 2),
+                                              //color: Colors.red,
+                                            ),
+                                            child: MoonInside(
+                                                offset: position + 35),
+                                            //offset: dayTimeDistance + 35),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ),
                             ),
-                            const MoonInside(),
-
+                            //
                             const DateStack(),
-
                             //hour markers
                             const SmallHourMarkers(),
-
                             //Minutes
                             Center(
                               child: Container(
@@ -137,6 +200,37 @@ class MyApp extends StatelessWidget {
                                       ],
                                     );
                                   },
+                                ),
+                              ),
+                            ),
+                            //Tap switch for the moon and sun
+                            Center(
+                              child: Container(
+                                height: 350,
+                                width: 350,
+                                alignment: Alignment.center,
+                                child: Transform.translate(
+                                  offset: const Offset(
+                                    0,
+                                    -(350 / 2 / 2),
+                                  ),
+                                  child: SizedBox(
+                                    height: 40,
+                                    width: 40,
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        if (dayTimeDistance == -35.0) {
+                                          setState(() {
+                                            dayTimeDistance = 35.0;
+                                          });
+                                        } else {
+                                          setState(() {
+                                            dayTimeDistance = -35.0;
+                                          });
+                                        }
+                                      },
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
@@ -209,8 +303,10 @@ class MyApp extends StatelessWidget {
 }
 
 class MoonInside extends StatelessWidget {
+  final offset;
   const MoonInside({
     Key? key,
+    required this.offset,
   }) : super(key: key);
 
   @override
@@ -219,9 +315,10 @@ class MoonInside extends StatelessWidget {
       height: 350,
       alignment: Alignment.center,
       child: Transform.translate(
-        offset: const Offset(
+        offset: Offset(
+          offset,
           0,
-          -(350 / 2 / 2),
+          //-(350 / 2 / 2),
         ),
         child: Center(
           child: Container(
@@ -264,6 +361,75 @@ class MoonInside extends StatelessWidget {
                 ),
               ),
             ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class SunInside extends StatelessWidget {
+  final offset;
+  const SunInside({
+    Key? key,
+    required this.offset,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Container(
+        height: 350,
+        alignment: Alignment.center,
+        child: Transform.translate(
+          offset: Offset(
+            offset,
+            0,
+            //-(350 / 2 / 2),
+          ),
+          child: Stack(
+            children: [
+              Transform.rotate(
+                angle: pi / 2,
+                child: Center(
+                  child: Container(
+                      height: 28, width: 1.5, color: Colors.redAccent),
+                ),
+              ),
+              Transform.rotate(
+                angle: pi / 4,
+                child: Center(
+                  child: Container(
+                      height: 28, width: 1.5, color: Colors.redAccent),
+                ),
+              ),
+              Transform.rotate(
+                angle: pi,
+                child: Center(
+                  child: Container(
+                      height: 28, width: 1.5, color: Colors.redAccent),
+                ),
+              ),
+              Transform.rotate(
+                angle: 3 * pi / 4,
+                child: Center(
+                  child: Container(
+                      height: 28, width: 1.5, color: Colors.redAccent),
+                ),
+              ),
+              Center(
+                child: Container(
+                  clipBehavior: Clip.none,
+                  width: 16,
+                  height: 16,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: Colors.redAccent,
+                    borderRadius: BorderRadius.circular(16 / 2),
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),
@@ -393,181 +559,60 @@ class SmallHourMarkers extends StatelessWidget {
   }
 }
 
-class Moon extends StatelessWidget {
-  const Moon({
+class DayTimeSpace extends StatelessWidget {
+  const DayTimeSpace({
     Key? key,
   }) : super(key: key);
 
-  /*@override
-  Widget build(BuildContext context) {
-    return Transform.translate(
-      offset: const Offset(0, -(350 / 2 / 2)),
-      child: Center(
-        //main container
-        child: Stack(
-          children: <Widget>[
-            Center(
-              child: Container(
-                decoration: BoxDecoration(
-                  color: const Color(0xFF3A456B),
-                  borderRadius: BorderRadius.circular(36 / 2),
-                  boxShadow: const <BoxShadow>[
-                    BoxShadow(
-                      offset: Offset(-1, -1),
-                      color: Color(0x80000000),
-                      blurRadius: 1,
-                      spreadRadius: 0.3,
-                    ),
-                    BoxShadow(
-                      offset: Offset(1, 1),
-                      color: Color(0x30FFFFFF),
-                      blurRadius: 1,
-                      spreadRadius: 0.3,
-                    ),
-                  ],
-                ),
-                child: Container(
-                  alignment: Alignment.center,
-                  height: 36,
-                  width: 36,
-                  padding: const EdgeInsets.all(2),
-                  decoration: BoxDecoration(
-                    color: const Color(0x60000000),
-                    borderRadius: BorderRadius.circular(36 / 2),
-                  ),
-                ),
-              ),
-            ),
-            Center(
-              child: Container(
-                clipBehavior: Clip.hardEdge,
-                decoration: BoxDecoration(
-                  color: Colors.redAccent[200],
-                  borderRadius: BorderRadius.circular(25 / 2),
-                ),
-                child: Transform.translate(
-                  offset: const Offset(10, 0),
-                  child: ColorFiltered(
-                    colorFilter: const ColorFilter.mode(
-                        Color(0x60000000), BlendMode.overlay),
-                    child: Container(
-                      clipBehavior: Clip.hardEdge,
-                      height: 25,
-                      width: 25,
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF3A456B),
-                        borderRadius: BorderRadius.circular(25 / 2),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }*/
-  // WORKING SAFE
-/*  @override
-  Widget build(BuildContext context) {
-    return Transform.translate(
-      offset: const Offset(0, -(350 / 2 / 2)),
-      child: Stack(
-        children: [
-          Center(
-            child: Container(
-              clipBehavior: Clip.hardEdge,
-              alignment: Alignment.center,
-              height: 36,
-              width: 36,
-              decoration: BoxDecoration(
-                color: const Color(0xFF3A456B),
-                borderRadius: BorderRadius.circular(36 / 2),
-                boxShadow: const <BoxShadow>[
-                  BoxShadow(
-                    offset: Offset(-1, -1),
-                    color: Color(0x80000000),
-                    blurRadius: 1,
-                    spreadRadius: 0.3,
-                  ),
-                  BoxShadow(
-                    offset: Offset(1, 1),
-                    color: Color(0x30FFFFFF),
-                    blurRadius: 1,
-                    spreadRadius: 0.3,
-                  ),
-                ],
-              ),
-              child: ColorFiltered(
-                colorFilter: const ColorFilter.mode(
-                    Color(0x60000000), BlendMode.overlay),
-                child: Container(
-                  height: 36,
-                  width: 36,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF3A456B),
-                    borderRadius: BorderRadius.circular(36 / 2),
-                    //boxShadow: const <BoxShadow>[
-                    //  BoxShadow(
-                    //    offset: Offset(-1, -1),
-                    //    color: Color(0x80000000),
-                    //    blurRadius: 1,
-                    //    spreadRadius: 0.3,
-                    //  ),
-                    //  BoxShadow(
-                    //    offset: Offset(1, 1),
-                    //    color: Color(0x30FFFFFF),
-                    //    blurRadius: 1,
-                    //    spreadRadius: 0.3,
-                    //  ),
-                    //],
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-*/
   @override
   Widget build(BuildContext context) {
-    return Transform.translate(
-      offset: const Offset(0, -(350 / 2 / 2)),
+    return Center(
       child: Container(
-        clipBehavior: Clip.hardEdge,
-        alignment: Alignment.center,
-        height: 36,
-        width: 36,
-        decoration: BoxDecoration(
-          color: const Color(0xFF3A456B),
-          borderRadius: BorderRadius.circular(36 / 2),
-          boxShadow: const <BoxShadow>[
-            BoxShadow(
-              offset: Offset(-1, -1),
-              color: Color(0x80000000),
-              blurRadius: 1,
-              spreadRadius: 0.3,
-            ),
-            BoxShadow(
-              offset: Offset(1, 1),
-              color: Color(0x30FFFFFF),
-              blurRadius: 1,
-              spreadRadius: 0.3,
-            ),
-          ],
+        width: 350,
+        height: 350,
+        decoration: const BoxDecoration(
+          borderRadius: BorderRadius.all(
+            Radius.circular(350 / 2),
+          ),
+          //color: Colors.red,
         ),
-        child: ColorFiltered(
-          colorFilter:
-              const ColorFilter.mode(Color(0x60000000), BlendMode.overlay),
+        alignment: Alignment.center,
+        child: Transform.translate(
+          offset: const Offset(0, -(350 / 2 / 2)),
           child: Container(
+            clipBehavior: Clip.hardEdge,
+            alignment: Alignment.center,
             height: 36,
             width: 36,
             decoration: BoxDecoration(
               color: const Color(0xFF3A456B),
               borderRadius: BorderRadius.circular(36 / 2),
+              boxShadow: const <BoxShadow>[
+                BoxShadow(
+                  offset: Offset(-1, -1),
+                  color: Color(0x80000000),
+                  blurRadius: 1,
+                  spreadRadius: 0.3,
+                ),
+                BoxShadow(
+                  offset: Offset(1, 1),
+                  color: Color(0x30FFFFFF),
+                  blurRadius: 1,
+                  spreadRadius: 0.3,
+                ),
+              ],
+            ),
+            child: ColorFiltered(
+              colorFilter:
+                  const ColorFilter.mode(Color(0x60000000), BlendMode.overlay),
+              child: Container(
+                height: 36,
+                width: 36,
+                decoration: BoxDecoration(
+                  color: const Color(0xFF3A456B),
+                  borderRadius: BorderRadius.circular(36 / 2),
+                ),
+              ),
             ),
           ),
         ),
