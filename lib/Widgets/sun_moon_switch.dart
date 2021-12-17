@@ -1,6 +1,8 @@
 import 'dart:math';
 
+import 'package:first_app/Provider/user_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class SunMoonSwitch extends StatefulWidget {
   const SunMoonSwitch({Key? key}) : super(key: key);
@@ -13,6 +15,7 @@ class _SunMoonSwitchState extends State<SunMoonSwitch>
     with SingleTickerProviderStateMixin {
   var dayTimeDistance = 35.0;
   late final AnimationController _controller;
+  var provider;
 
   @override
   void initState() {
@@ -31,29 +34,22 @@ class _SunMoonSwitchState extends State<SunMoonSwitch>
 
   @override
   Widget build(BuildContext context) {
+    provider = Provider.of<UserProvider>(context, listen: true);
+    if (provider.appmProvider == true) {
+      dayTimeDistance = -35.0;
+    } else {
+      dayTimeDistance = 35.0;
+    }
     return Center(
-        child: Container(
-      height: 350,
-      width: 350,
-      alignment: Alignment.center,
-      child: Transform.translate(
-        offset: const Offset(
-          0,
-          -(350 / 2 / 2),
-        ),
-        child: GestureDetector(
-          onTap: () {
-            //print('tapped');
-            if (dayTimeDistance == -35.0) {
-              setState(() {
-                dayTimeDistance = 35.0;
-              });
-            } else {
-              setState(() {
-                dayTimeDistance = -35.0;
-              });
-            }
-          },
+      child: Container(
+        height: 350,
+        width: 350,
+        alignment: Alignment.center,
+        child: Transform.translate(
+          offset: const Offset(
+            0,
+            -(350 / 2 / 2),
+          ),
           child: TweenAnimationBuilder(
             curve: Curves.easeInOutCubic,
             duration: const Duration(milliseconds: 250),
@@ -92,7 +88,7 @@ class _SunMoonSwitchState extends State<SunMoonSwitch>
           ),
         ),
       ),
-    ));
+    );
   }
 }
 

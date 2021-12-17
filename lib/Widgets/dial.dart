@@ -1,17 +1,21 @@
+import 'package:first_app/Provider/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 
 class Dial extends StatefulWidget {
   final double width;
   final int start;
   final int end;
+  final String type;
 
-  const Dial({
-    Key? key,
-    required this.width,
-    required this.start,
-    required this.end,
-  }) : super(key: key);
+  const Dial(
+      {Key? key,
+      required this.width,
+      required this.start,
+      required this.end,
+      required this.type})
+      : super(key: key);
 
   @override
   State<Dial> createState() => _DialState();
@@ -21,6 +25,7 @@ class _DialState extends State<Dial> {
   late final List _list = [];
   late double _increment;
   final ScrollController _scrollController = ScrollController();
+  var provider;
   @override
   void initState() {
     super.initState();
@@ -48,6 +53,7 @@ class _DialState extends State<Dial> {
 
   @override
   Widget build(BuildContext context) {
+    provider = Provider.of<UserProvider>(context, listen: false);
     return ShaderMask(
       shaderCallback: (Rect rect) {
         return const LinearGradient(
@@ -73,6 +79,23 @@ class _DialState extends State<Dial> {
             Expanded(
               child: NotificationListener<ScrollNotification>(
                 onNotification: (scrollNotification) {
+                  if (widget.type == 'hour') {
+                    if (scrollNotification is ScrollUpdateNotification) {
+                      var _index =
+                          (_scrollController.position.pixels / _increment)
+                              .round();
+
+                      if (_index > 12) {
+                        if (provider.appmProvider != true) {
+                          provider.setTimeOfDay(true);
+                        }
+                      } else {
+                        if (provider.appmProvider == true) {
+                          provider.setTimeOfDay(false);
+                        }
+                      }
+                    }
+                  }
                   if (scrollNotification is ScrollEndNotification) {
                     if (manualScroll == false) {
                       setState(() {

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
 class UserProvider with ChangeNotifier {
-  int _count = 0;
+  bool _appmProvider = false;
 
-  int get count => _count;
+  bool get appmProvider => _appmProvider;
 
-  void increment() {
-    _count++;
+  void setTimeOfDay(bool time) {
+    _appmProvider = time;
     notifyListeners();
   }
 }

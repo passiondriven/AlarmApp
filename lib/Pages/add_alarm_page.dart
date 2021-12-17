@@ -85,10 +85,11 @@ class AddAlarmPage extends StatelessWidget {
                       ShadowCircle(),
                       // moon
                       DayTimeSpace(),
-                      SunMoonSwitch(),
+
                       DateContainer(),
                       SmallHourMarkers(),
                       Hands(),
+                      SunMoonSwitch(),
                     ],
                   ),
                 ),
@@ -102,7 +103,12 @@ class AddAlarmPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 5),
                 // Hour dial
-                Dial(width: constraints.maxWidth, start: 0, end: 23),
+                Dial(
+                  width: constraints.maxWidth,
+                  start: 0,
+                  end: 23,
+                  type: 'hour',
+                ),
                 const SizedBox(height: 20),
                 // Heading minutes
                 Text(
@@ -113,7 +119,12 @@ class AddAlarmPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 5),
                 // Minute dial
-                Dial(width: constraints.maxWidth, start: 0, end: 59),
+                Dial(
+                  width: constraints.maxWidth,
+                  start: 0,
+                  end: 59,
+                  type: 'min',
+                ),
                 // Bottom buttons
                 Expanded(
                   child: SizedBox(
