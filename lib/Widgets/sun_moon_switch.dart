@@ -15,7 +15,6 @@ class _SunMoonSwitchState extends State<SunMoonSwitch>
     with SingleTickerProviderStateMixin {
   var dayTimeDistance = 35.0;
   late final AnimationController _controller;
-  var provider;
 
   @override
   void initState() {
@@ -34,7 +33,7 @@ class _SunMoonSwitchState extends State<SunMoonSwitch>
 
   @override
   Widget build(BuildContext context) {
-    provider = Provider.of<UserProvider>(context, listen: true);
+    final provider = Provider.of<UserProvider>(context, listen: true);
     if (provider.appmProvider == true) {
       dayTimeDistance = -35.0;
     } else {
@@ -77,10 +76,8 @@ class _SunMoonSwitchState extends State<SunMoonSwitch>
                     clipBehavior: Clip.hardEdge,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(35 / 2),
-                      //color: Colors.red,
                     ),
                     child: MoonInside(offset: position + 35),
-                    //offset: dayTimeDistance + 35),
                   ),
                 ],
               );

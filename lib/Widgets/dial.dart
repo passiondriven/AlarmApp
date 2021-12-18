@@ -79,11 +79,16 @@ class _DialState extends State<Dial> {
             Expanded(
               child: NotificationListener<ScrollNotification>(
                 onNotification: (scrollNotification) {
-                  if (widget.type == 'hour') {
-                    if (scrollNotification is ScrollUpdateNotification) {
-                      var _index =
-                          (_scrollController.position.pixels / _increment)
-                              .round();
+                  var _index =
+                      (_scrollController.position.pixels / _increment).round();
+
+                  if (scrollNotification is ScrollUpdateNotification) {
+                    // update time
+
+                    if (widget.type == 'hour') {
+                      if (_index < 24 && _index >= 0) {
+                        provider.updateHour(_index);
+                      }
 
                       if (_index > 12) {
                         if (provider.appmProvider != true) {
@@ -93,6 +98,10 @@ class _DialState extends State<Dial> {
                         if (provider.appmProvider == true) {
                           provider.setTimeOfDay(false);
                         }
+                      }
+                    } else {
+                      if (_index < 60 && _index >= 0) {
+                        provider.updateMin(_index);
                       }
                     }
                   }

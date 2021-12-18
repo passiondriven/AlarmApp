@@ -1,6 +1,8 @@
 import 'dart:math';
 
+import 'package:first_app/Provider/user_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 const gap = 25.0;
 const handWidth = 1.25;
@@ -15,22 +17,61 @@ class Hands extends StatefulWidget {
   _HandsState createState() => _HandsState();
 }
 
-class _HandsState extends State<Hands> {
+class _HandsState extends State<Hands> with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+  double minAngle = 0.0;
+  double hourAngle = pi;
+  @override
+  void initState() {
+    super.initState();
+
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 500),
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<UserProvider>(context, listen: true);
+    //print(provider.hour.toString() + ' : ' + provider.min.toString());
     return Center(
       child: LayoutBuilder(
         builder: (context, constraints) {
           return Stack(
             children: [
-              MinuteHand(
-                constraint: constraints,
-                minHandAngle: widget.minHandAngle,
-              ),
-              HourHand(
-                constraint: constraints,
-                hourHandAngle: widget.hourHandAngle,
-              ),
+              TweenAnimationBuilder(
+                  curve: Curves.easeIn,
+                  duration: const Duration(milliseconds: 200),
+                  tween: Tween<double>(
+                    begin: 0,
+                    end: provider.min * pi / 30,
+                  ),
+                  builder: (_, double angle, ___) {
+                    return MinuteHand(
+                      constraint: constraints,
+                      minHandAngle: angle,
+                    );
+                  }),
+              TweenAnimationBuilder(
+                  curve: Curves.easeIn,
+                  duration: const Duration(milliseconds: 500),
+                  tween: Tween<double>(
+                    begin: 0,
+                    end: provider.hour * pi / 6,
+                  ),
+                  builder: (_, double angle, ___) {
+                    return HourHand(
+                      constraint: constraints,
+                      hourHandAngle: angle,
+                    );
+                  }),
             ],
           );
         },
