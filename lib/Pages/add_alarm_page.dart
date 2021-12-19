@@ -66,103 +66,108 @@ class AddAlarmPage extends StatelessWidget {
       appBar: appbar,
       body: LayoutBuilder(
         builder: (context, constraints) {
-          return Transform(
-            transform: Matrix4.identity()
-            //..setEntry(3, 2, 0.0001)
-            //..rotateY(-pi / pi)
-            ,
-            child: Container(
-              width: constraints.maxWidth,
-              height: constraints.maxHeight,
-              decoration: BoxDecoration(gradient: backgroundGradient),
-              child: Column(
-                children: <Widget>[
-                  const SizedBox(height: 100),
-                  // Clock Face
-                  SizedBox(
-                    width: constraints.maxWidth,
-                    height: 350,
-                    child: Stack(
-                      children: const <Widget>[
-                        //main background circle
-                        MainCircle(),
-                        // light cicle
-                        LightCircle(),
-                        // shadow circle
-                        ShadowCircle(),
-
-                        DayTimeSpace(),
-                        DateContainer(),
-                        SmallHourMarkers(),
-                        SunMoonSwitch(),
-                        Hands(),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 50),
-                  // Heading hour
-                  Text(
-                    'HOUR',
-                    style: GoogleFonts.jost(
-                      color: Colors.white,
-                    ),
-                  ),
-                  const SizedBox(height: 5),
-                  // Hour dial
-                  Dial(
-                    width: constraints.maxWidth,
-                    start: 0,
-                    end: 23,
-                    type: 'hour',
-                  ),
-                  const SizedBox(height: 20),
-                  // Heading minutes
-                  Text(
-                    'MINUTE',
-                    style: GoogleFonts.jost(
-                      color: Colors.white,
-                    ),
-                  ),
-                  const SizedBox(height: 5),
-                  // Minute dial
-                  Dial(
-                    width: constraints.maxWidth,
-                    start: 0,
-                    end: 59,
-                    type: 'min',
-                  ),
-                  // Bottom buttons
-                  Expanded(
-                    child: SizedBox(
-                      height: 25,
+          return Transform.translate(
+            offset: const Offset(-200, 0),
+            child: Transform(
+              alignment: Alignment.centerRight,
+              transform: Matrix4.identity()
+                ..setEntry(3, 2, 0.001)
+                ..rotateY(0.5 * pi / 2)
+              //..translate(100, 0, 0) //
+              ,
+              child: Container(
+                width: constraints.maxWidth,
+                height: constraints.maxHeight,
+                decoration: BoxDecoration(gradient: backgroundGradient),
+                child: Column(
+                  children: <Widget>[
+                    const SizedBox(height: 100),
+                    // Clock Face
+                    SizedBox(
                       width: constraints.maxWidth,
-                      //decoration: BoxDecoration(color: Colors.red),
-                      child: Row(
-                        children: <Widget>[
-                          Expanded(
-                            child: TextButton(
-                              onPressed: () {},
-                              child: Text(
-                                'CANCEL',
-                                style: GoogleFonts.jost(color: Colors.white),
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: TextButton(
-                              onPressed: () {},
-                              child: Text(
-                                'SAVE',
-                                style:
-                                    GoogleFonts.jost(color: Colors.redAccent),
-                              ),
-                            ),
-                          ),
+                      height: 350,
+                      child: Stack(
+                        children: const <Widget>[
+                          //main background circle
+                          MainCircle(),
+                          // light cicle
+                          LightCircle(),
+                          // shadow circle
+                          ShadowCircle(),
+
+                          DayTimeSpace(),
+                          DateContainer(),
+                          SmallHourMarkers(),
+                          SunMoonSwitch(),
+                          Hands(),
                         ],
                       ),
                     ),
-                  ),
-                ],
+                    const SizedBox(height: 50),
+                    // Heading hour
+                    Text(
+                      'HOUR',
+                      style: GoogleFonts.jost(
+                        color: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(height: 5),
+                    // Hour dial
+                    Dial(
+                      width: constraints.maxWidth,
+                      start: 0,
+                      end: 23,
+                      type: 'hour',
+                    ),
+                    const SizedBox(height: 20),
+                    // Heading minutes
+                    Text(
+                      'MINUTE',
+                      style: GoogleFonts.jost(
+                        color: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(height: 5),
+                    // Minute dial
+                    Dial(
+                      width: constraints.maxWidth,
+                      start: 0,
+                      end: 59,
+                      type: 'min',
+                    ),
+                    // Bottom buttons
+                    Expanded(
+                      child: SizedBox(
+                        height: 25,
+                        width: constraints.maxWidth,
+                        //decoration: BoxDecoration(color: Colors.red),
+                        child: Row(
+                          children: <Widget>[
+                            Expanded(
+                              child: TextButton(
+                                onPressed: () {},
+                                child: Text(
+                                  'CANCEL',
+                                  style: GoogleFonts.jost(color: Colors.white),
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              child: TextButton(
+                                onPressed: () {},
+                                child: Text(
+                                  'SAVE',
+                                  style:
+                                      GoogleFonts.jost(color: Colors.redAccent),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           );
