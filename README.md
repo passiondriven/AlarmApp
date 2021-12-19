@@ -16,7 +16,7 @@ Currently I have the prototype for one of the app's page i.e. the page to add al
 
 ### Major update
 
--> Add spotify services for alarm tones.
--> Add other pages.
--> Add morning news feed section.
--> Add notifications and foreground view when not active.
+-> Add spotify services for alarm tones.\n
+-> Add other pages.\n
+-> Add morning news feed section.\n
+-> Add notifications and foreground view when not active.\n
