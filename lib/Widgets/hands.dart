@@ -47,7 +47,7 @@ class _HandsState extends State<Hands> with SingleTickerProviderStateMixin {
           return Stack(
             children: [
               TweenAnimationBuilder(
-                  curve: Curves.easeIn,
+                  curve: Curves.easeInOut,
                   duration: const Duration(milliseconds: 200),
                   tween: Tween<double>(
                     begin: 0,
@@ -60,11 +60,17 @@ class _HandsState extends State<Hands> with SingleTickerProviderStateMixin {
                     );
                   }),
               TweenAnimationBuilder(
-                  curve: Curves.easeIn,
-                  duration: const Duration(milliseconds: 500),
+                  curve: Curves.easeInOut,
+                  duration: const Duration(milliseconds: 400),
                   tween: Tween<double>(
                     begin: 0,
-                    end: provider.hour * pi / 6,
+                    //end: provider.hour * pi / 6,
+                    end:
+                        provider.hour * pi / 6 + provider.min * pi / 6 * 1 / 60,
+
+                    // 1 hour is pi / 6
+                    // 1 hour is divided in 60 steps
+                    // 1 min will have influence on the hour hand pi / 6 + min * pi / 6 / 60
                   ),
                   builder: (_, double angle, ___) {
                     return HourHand(
