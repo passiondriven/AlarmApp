@@ -12,9 +12,41 @@ import '../Widgets/clockface_widgets.dart';
 import '../Widgets/space_sun_and_moon.dart';
 import '../Widgets/sun_moon_switch.dart';
 
-class AddAlarmPage extends StatelessWidget {
+class AddAlarmPage extends StatefulWidget {
   static const routeName = '/AddAlarmPage';
-  AddAlarmPage({Key? key}) : super(key: key);
+  const AddAlarmPage({Key? key}) : super(key: key);
+
+  @override
+  State<AddAlarmPage> createState() => _AddAlarmPageState();
+}
+
+class _AddAlarmPageState extends State<AddAlarmPage>
+    with SingleTickerProviderStateMixin {
+  late Animation<double> _animation;
+  late final AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 200),
+    );
+    _animation = Tween<double>(begin: 0, end: 1).animate(_controller)
+      ..addListener(() {
+        setState(() {
+          //
+        });
+      });
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   final LinearGradient backgroundGradient = const LinearGradient(
     colors: <Color>[
@@ -27,7 +59,7 @@ class AddAlarmPage extends StatelessWidget {
     stops: [0.1, 0.8],
   );
 
-  final AppBar appbar = AppBar(
+  /* final AppBar appbar = AppBar(
     //toolbarHeight: 30,
     foregroundColor: Colors.white,
     centerTitle: true,
@@ -50,12 +82,13 @@ class AddAlarmPage extends StatelessWidget {
         alignment: Alignment.center,
         child: IconButton(
           splashRadius: 23,
-          icon: const Icon(Icons.menu),
-          onPressed: () {},
+          icon: Icon(Icons.menu),
+          onPressed: _onPressed(),
         ),
       ),
     ],
   );
+*/
 
   @override
   Widget build(BuildContext context) {
@@ -63,16 +96,54 @@ class AddAlarmPage extends StatelessWidget {
       //extendBody: true,
       extendBodyBehindAppBar: true,
       backgroundColor: Colors.black,
-      appBar: appbar,
+      appBar: AppBar(
+        //toolbarHeight: 30,
+        foregroundColor: Colors.white,
+        centerTitle: true,
+        title: Text(
+          'ADD ALARM',
+          style: GoogleFonts.jost(),
+        ),
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        leading: IconButton(
+          splashRadius: 23,
+          icon: const Icon(
+            Icons.arrow_back,
+          ),
+          onPressed: () {},
+        ),
+        actions: <Widget>[
+          Container(
+            margin: const EdgeInsets.only(right: 20),
+            alignment: Alignment.center,
+            child: IconButton(
+              splashRadius: 23,
+              icon: const Icon(Icons.menu),
+              onPressed: () {
+                setState(
+                  () {
+                    if (_animation.value == 0) {
+                      _controller.forward();
+                    } else {
+                      _controller.reverse();
+                    }
+                  },
+                );
+              },
+            ),
+          ),
+        ],
+      ),
       body: LayoutBuilder(
         builder: (context, constraints) {
           return Transform.translate(
-            offset: const Offset(-200, 0),
+            offset: Offset(-200 * _animation.value, 0),
             child: Transform(
               alignment: Alignment.centerRight,
               transform: Matrix4.identity()
                 ..setEntry(3, 2, 0.001)
-                ..rotateY(0.5 * pi / 2)
+                ..rotateY(_animation.value * 0.5 * pi / 2)
               //..translate(100, 0, 0) //
               ,
               child: Container(
