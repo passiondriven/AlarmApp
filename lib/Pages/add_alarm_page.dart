@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:first_app/Widgets/dial.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 
 import 'package:google_fonts/google_fonts.dart';
 
@@ -59,6 +60,10 @@ class _AddAlarmPageState extends State<AddAlarmPage>
     stops: [0.1, 0.8],
   );
 
+  double x = 0;
+  double y = 0;
+  double z = 0;
+
   /* final AppBar appbar = AppBar(
     //toolbarHeight: 30,
     foregroundColor: Colors.white,
@@ -89,7 +94,6 @@ class _AddAlarmPageState extends State<AddAlarmPage>
     ],
   );
 */
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -137,108 +141,138 @@ class _AddAlarmPageState extends State<AddAlarmPage>
       ),
       body: LayoutBuilder(
         builder: (context, constraints) {
-          return Transform.translate(
-            offset: Offset(-200 * _animation.value, 0),
-            child: Transform(
-              alignment: Alignment.centerRight,
-              transform: Matrix4.identity()
-                ..setEntry(3, 2, 0.001)
-                ..rotateY(_animation.value * 0.5 * pi / 2)
-              //..translate(100, 0, 0) //
-              ,
-              child: Container(
-                width: constraints.maxWidth,
-                height: constraints.maxHeight,
-                decoration: BoxDecoration(gradient: backgroundGradient),
-                child: Column(
-                  children: <Widget>[
-                    const SizedBox(height: 100),
-                    // Clock Face
-                    SizedBox(
-                      width: constraints.maxWidth,
-                      height: 350,
-                      child: Stack(
-                        children: const <Widget>[
-                          //main background circle
-                          MainCircle(),
-                          // light cicle
-                          LightCircle(),
-                          // shadow circle
-                          ShadowCircle(),
+          return Container(
+            width: constraints.maxWidth,
+            height: constraints.maxHeight,
+            //color: Colors.blueAccent,
+            alignment: Alignment.center,
+            child: Container(
+              width: constraints.maxWidth,
+              clipBehavior: Clip.hardEdge,
+              decoration: const BoxDecoration(),
+              child: Stack(
+                children: <Widget>[
+                  Container(
+                    color: Colors.transparent,
+                    height: constraints.maxHeight,
+                    child: Transform.translate(
+                      offset: Offset(-_animation.value * 200, 0),
+                      child: Transform(
+                        alignment: Alignment.centerRight,
+                        transform: Matrix4.identity()
+                          ..setEntry(3, 2, 0.001)
+                          ..rotateY(_animation.value * 0.5 * pi / 2),
+                        child: Container(
+                          //width: constraints.maxWidth,
+                          height: constraints.maxHeight,
+                          decoration: BoxDecoration(
+                            gradient: backgroundGradient,
+                            //color: Colors.green,
+                          ),
+                          child: Column(
+                            children: <Widget>[
+                              const SizedBox(height: 100),
+                              // Clock Face
+                              SizedBox(
+                                width: constraints.maxWidth,
+                                height: 350,
+                                child: Stack(
+                                  children: const <Widget>[
+                                    //main background circle
+                                    MainCircle(),
+                                    // light cicle
+                                    LightCircle(),
+                                    // shadow circle
+                                    ShadowCircle(),
 
-                          DayTimeSpace(),
-                          DateContainer(),
-                          SmallHourMarkers(),
-                          SunMoonSwitch(),
-                          Hands(),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 50),
-                    // Heading hour
-                    Text(
-                      'HOUR',
-                      style: GoogleFonts.jost(
-                        color: Colors.white,
-                      ),
-                    ),
-                    const SizedBox(height: 5),
-                    // Hour dial
-                    Dial(
-                      width: constraints.maxWidth,
-                      start: 0,
-                      end: 23,
-                      type: 'hour',
-                    ),
-                    const SizedBox(height: 20),
-                    // Heading minutes
-                    Text(
-                      'MINUTE',
-                      style: GoogleFonts.jost(
-                        color: Colors.white,
-                      ),
-                    ),
-                    const SizedBox(height: 5),
-                    // Minute dial
-                    Dial(
-                      width: constraints.maxWidth,
-                      start: 0,
-                      end: 59,
-                      type: 'min',
-                    ),
-                    // Bottom buttons
-                    Expanded(
-                      child: SizedBox(
-                        height: 25,
-                        width: constraints.maxWidth,
-                        //decoration: BoxDecoration(color: Colors.red),
-                        child: Row(
-                          children: <Widget>[
-                            Expanded(
-                              child: TextButton(
-                                onPressed: () {},
-                                child: Text(
-                                  'CANCEL',
-                                  style: GoogleFonts.jost(color: Colors.white),
+                                    DayTimeSpace(),
+                                    DateContainer(),
+                                    SmallHourMarkers(),
+                                    SunMoonSwitch(),
+                                    Hands(),
+                                  ],
                                 ),
                               ),
-                            ),
-                            Expanded(
-                              child: TextButton(
-                                onPressed: () {},
-                                child: Text(
-                                  'SAVE',
-                                  style:
-                                      GoogleFonts.jost(color: Colors.redAccent),
+                              const SizedBox(height: 50),
+                              // Heading hour
+                              Text(
+                                'HOUR',
+                                style: GoogleFonts.jost(
+                                  color: Colors.white,
                                 ),
                               ),
-                            ),
-                          ],
+                              const SizedBox(height: 5),
+                              // Hour dial
+                              Dial(
+                                width: constraints.maxWidth,
+                                start: 0,
+                                end: 23,
+                                type: 'hour',
+                              ),
+                              const SizedBox(height: 20),
+                              // Heading minutes
+                              Text(
+                                'MINUTE',
+                                style: GoogleFonts.jost(
+                                  color: Colors.white,
+                                ),
+                              ),
+                              const SizedBox(height: 5),
+                              // Minute dial
+                              Dial(
+                                width: constraints.maxWidth,
+                                start: 0,
+                                end: 59,
+                                type: 'min',
+                              ),
+                              // Bottom buttons
+                              Expanded(
+                                child: SizedBox(
+                                  height: 25,
+                                  width: constraints.maxWidth,
+                                  //decoration: BoxDecoration(color: Colors.red),
+                                  child: Row(
+                                    children: <Widget>[
+                                      Expanded(
+                                        child: TextButton(
+                                          onPressed: () {},
+                                          child: Text(
+                                            'CANCEL',
+                                            style: GoogleFonts.jost(
+                                                color: Colors.white),
+                                          ),
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: TextButton(
+                                          onPressed: () {},
+                                          child: Text(
+                                            'SAVE',
+                                            style: GoogleFonts.jost(
+                                                color: Colors.redAccent),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                  Positioned(
+                    left: constraints.maxWidth - _animation.value * 200,
+                    //left: screen width - ( tween value * width od the drawer ),
+                    child: Container(
+                      height: constraints.maxHeight,
+                      width: 200,
+                      color: Colors.blueAccent,
+                    ),
+                  ),
+                ],
               ),
             ),
           );
