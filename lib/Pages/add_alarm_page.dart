@@ -59,6 +59,16 @@ class _AddAlarmPageState extends State<AddAlarmPage>
     end: Alignment.bottomRight,
     stops: [0.1, 0.8],
   );
+  final LinearGradient drawerGradient = const LinearGradient(
+    colors: <Color>[
+      Color(0xFF3A456B),
+      Color(0x373A456B),
+      //Color(0xA0000000),
+    ],
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    stops: [0.1, 0.8],
+  );
 
   double x = 0;
   double y = 0;
@@ -161,7 +171,7 @@ class _AddAlarmPageState extends State<AddAlarmPage>
                         alignment: Alignment.centerRight,
                         transform: Matrix4.identity()
                           ..setEntry(3, 2, 0.001)
-                          ..rotateY(_animation.value * 0.5 * pi / 2),
+                          ..rotateY(_animation.value * pi / 2 * 1),
                         child: Container(
                           //width: constraints.maxWidth,
                           height: constraints.maxHeight,
@@ -266,10 +276,25 @@ class _AddAlarmPageState extends State<AddAlarmPage>
                   Positioned(
                     left: constraints.maxWidth - _animation.value * 200,
                     //left: screen width - ( tween value * width od the drawer ),
-                    child: Container(
-                      height: constraints.maxHeight,
-                      width: 200,
-                      color: Colors.blueAccent,
+                    child: Transform(
+                      alignment: Alignment.centerLeft,
+                      transform: Matrix4.identity()
+                        ..setEntry(3, 2, 0.001)
+                        ..rotateY(-(1 - _animation.value) * pi / 2),
+                      child: Container(
+                        height: constraints.maxHeight,
+                        width: 200,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          gradient: backgroundGradient,
+                          //color: Colors.green,
+                        ),
+                        child: Container(
+                          height: 50,
+                          width: 100,
+                          color: Colors.white,
+                        ),
+                      ),
                     ),
                   ),
                 ],
