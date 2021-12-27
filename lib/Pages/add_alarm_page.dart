@@ -1,10 +1,12 @@
 import 'dart:math';
 
+import 'package:first_app/Provider/user_provider.dart';
 import 'package:first_app/Widgets/dial.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 
 import '../Widgets/date_container.dart';
 import '../Widgets/hands.dart';
@@ -32,7 +34,7 @@ class _AddAlarmPageState extends State<AddAlarmPage>
 
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 200),
+      duration: const Duration(milliseconds: 250),
     );
     _animation = Tween<double>(begin: 0, end: 1).animate(_controller)
       ..addListener(() {
@@ -106,16 +108,18 @@ class _AddAlarmPageState extends State<AddAlarmPage>
 */
   @override
   Widget build(BuildContext context) {
+    final _titleNotifier = Provider.of<UserProvider>(context, listen: true);
     return Scaffold(
       //extendBody: true,
       extendBodyBehindAppBar: true,
       backgroundColor: Colors.black,
+      //backgroundColor: const Color(0xFF121212),
       appBar: AppBar(
         //toolbarHeight: 30,
         foregroundColor: Colors.white,
         centerTitle: true,
         title: Text(
-          'ADD ALARM',
+          _titleNotifier.title,
           style: GoogleFonts.jost(),
         ),
         elevation: 0,
@@ -139,8 +143,10 @@ class _AddAlarmPageState extends State<AddAlarmPage>
                   () {
                     if (_animation.value == 0) {
                       _controller.forward();
+                      _titleNotifier.updateTitle('ALARMS');
                     } else {
                       _controller.reverse();
+                      _titleNotifier.updateTitle('ADD ALARMS');
                     }
                   },
                 );
@@ -273,35 +279,97 @@ class _AddAlarmPageState extends State<AddAlarmPage>
                       ),
                     ),
                   ),
-                  Positioned(
-                    left: constraints.maxWidth - _animation.value * 200,
-                    //left: screen width - ( tween value * width od the drawer ),
-                    child: Transform(
-                      alignment: Alignment.centerLeft,
-                      transform: Matrix4.identity()
-                        ..setEntry(3, 2, 0.001)
-                        ..rotateY(-(1 - _animation.value) * pi / 2),
-                      child: Container(
-                        height: constraints.maxHeight,
-                        width: 200,
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          gradient: backgroundGradient,
-                          //color: Colors.green,
-                        ),
-                        child: Container(
-                          height: 50,
-                          width: 100,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
+                  SideDock(
+                    animation: _animation,
+                    backgroundGradient: backgroundGradient,
+                    constraints: constraints,
                   ),
                 ],
               ),
             ),
           );
         },
+      ),
+    );
+  }
+}
+
+class SideDock extends StatelessWidget {
+  const SideDock(
+      {Key? key,
+      required Animation<double> animation,
+      required this.backgroundGradient,
+      required this.constraints})
+      : _animation = animation,
+        super(key: key);
+
+  final Animation<double> _animation;
+  final LinearGradient backgroundGradient;
+  final BoxConstraints constraints;
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
+      left: constraints.maxWidth - _animation.value * 200,
+      //left: screen width - ( tween value * width od the drawer ),
+      child: Transform(
+        alignment: Alignment.centerLeft,
+        transform: Matrix4.identity()
+          ..setEntry(3, 2, 0.001)
+          ..rotateY(-(1 - _animation.value) * pi / 2),
+        child: Container(
+          height: constraints.maxHeight,
+          width: 200,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            gradient: backgroundGradient,
+          ),
+          child: Column(
+            children: [
+              const SizedBox(height: 100),
+              Container(
+                //color: Colors.black,
+                padding: const EdgeInsets.all(20),
+                child: Text(
+                  'Test',
+                  style: GoogleFonts.jost(color: Colors.white, fontSize: 20),
+                ),
+              ),
+              Container(
+                //color: Colors.black,
+                padding: const EdgeInsets.all(20),
+                child: Text(
+                  'Test',
+                  style: GoogleFonts.jost(color: Colors.white, fontSize: 20),
+                ),
+              ),
+              Container(
+                //color: Colors.black,
+                padding: const EdgeInsets.all(20),
+                child: Text(
+                  'Test',
+                  style: GoogleFonts.jost(color: Colors.white, fontSize: 20),
+                ),
+              ),
+              Container(
+                //color: Colors.black,
+                padding: const EdgeInsets.all(20),
+                child: Text(
+                  'Test',
+                  style: GoogleFonts.jost(color: Colors.white, fontSize: 20),
+                ),
+              ),
+              Container(
+                //color: Colors.black,
+                padding: const EdgeInsets.all(20),
+                child: Text(
+                  'Test',
+                  style: GoogleFonts.jost(color: Colors.white, fontSize: 20),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
