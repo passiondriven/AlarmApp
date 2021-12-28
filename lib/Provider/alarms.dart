@@ -10,6 +10,10 @@ class Alarm {
 class Alarms {
   final List<Alarm> _alarmList = [];
 
+  void initAlarm() {
+    //TODO: Get alarms from memory
+  }
+
   void addAlarm({required DateTime dateTime, required String music}) {
     _alarmList.add(Alarm(dateTime: dateTime, music: music));
   }

@@ -295,12 +295,12 @@ class _AddAlarmPageState extends State<AddAlarmPage>
 }
 
 class SideDock extends StatelessWidget {
-  const SideDock(
-      {Key? key,
-      required Animation<double> animation,
-      required this.backgroundGradient,
-      required this.constraints})
-      : _animation = animation,
+  const SideDock({
+    Key? key,
+    required Animation<double> animation,
+    required this.backgroundGradient,
+    required this.constraints,
+  })  : _animation = animation,
         super(key: key);
 
   final Animation<double> _animation;
@@ -321,54 +321,94 @@ class SideDock extends StatelessWidget {
           height: constraints.maxHeight,
           width: 200,
           alignment: Alignment.center,
-          decoration: BoxDecoration(
-            gradient: backgroundGradient,
-          ),
-          child: Column(
+          color: const Color(0xFF3A456B),
+          //decoration: BoxDecoration(
+          //  gradient: backgroundGradient,
+          //),
+          child: Stack(
             children: [
-              const SizedBox(height: 100),
-              Container(
-                //color: Colors.black,
-                padding: const EdgeInsets.all(20),
-                child: Text(
-                  'Test',
-                  style: GoogleFonts.jost(color: Colors.white, fontSize: 20),
+              Center(
+                child: Column(
+                  children: const <Widget>[
+                    SizedBox(height: 150),
+                    AlarmContainer(),
+                    AlarmContainer(),
+                    AlarmContainer(),
+                    AlarmContainer(),
+                  ],
                 ),
               ),
-              Container(
-                //color: Colors.black,
-                padding: const EdgeInsets.all(20),
-                child: Text(
-                  'Test',
-                  style: GoogleFonts.jost(color: Colors.white, fontSize: 20),
-                ),
-              ),
-              Container(
-                //color: Colors.black,
-                padding: const EdgeInsets.all(20),
-                child: Text(
-                  'Test',
-                  style: GoogleFonts.jost(color: Colors.white, fontSize: 20),
-                ),
-              ),
-              Container(
-                //color: Colors.black,
-                padding: const EdgeInsets.all(20),
-                child: Text(
-                  'Test',
-                  style: GoogleFonts.jost(color: Colors.white, fontSize: 20),
-                ),
-              ),
-              Container(
-                //color: Colors.black,
-                padding: const EdgeInsets.all(20),
-                child: Text(
-                  'Test',
-                  style: GoogleFonts.jost(color: Colors.white, fontSize: 20),
+              IgnorePointer(
+                child: Container(
+                  height: constraints.maxHeight,
+                  width: constraints.maxWidth,
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: <Color>[
+                        Color(0x00000000),
+                        Color(0xF0000000),
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                  ),
                 ),
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class AlarmContainer extends StatefulWidget {
+  const AlarmContainer({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  State<AlarmContainer> createState() => _AlarmContainerState();
+}
+
+class _AlarmContainerState extends State<AlarmContainer> {
+  bool _ispressed = true;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          if (_ispressed) {
+            _ispressed = false;
+          } else {
+            _ispressed = true;
+          }
+        });
+      },
+      child: Container(
+        height: 50,
+        margin: const EdgeInsets.all(10.0),
+        decoration: BoxDecoration(
+          borderRadius: const BorderRadius.all(Radius.circular(10)),
+          boxShadow: <BoxShadow>[
+            BoxShadow(
+              offset: _ispressed
+                  ? const Offset(-2.5, -2.5)
+                  : const Offset(2.5, 2.5),
+              color: const Color(0x80000000),
+              blurRadius: 2.5,
+              spreadRadius: 0.5,
+            ),
+            BoxShadow(
+              offset: _ispressed ? Offset(2.5, 2.5) : Offset(-2.5, -2.5),
+              color: Color(0x30FFFFFF),
+              blurRadius: 2.5,
+              spreadRadius: 0.5,
+            ),
+          ],
+          color: Color(0xFF3A456B),
+          //Color(0x373A456B),,
         ),
       ),
     );
