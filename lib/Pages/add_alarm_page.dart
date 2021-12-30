@@ -438,7 +438,6 @@ class AlarmContent extends StatelessWidget {
       height: 50,
       margin: const EdgeInsets.all(10.0),
       decoration: BoxDecoration(
-        //color: Colors.red,
         border: Border.all(color: Colors.black87, width: 0.2),
         borderRadius: const BorderRadius.all(Radius.circular(10)),
       ),

@@ -1,12 +1,13 @@
 # Clock App
 
 A flutter clock and alarm app based on an idea from [@Kalpesh Prithyani](linkedin.com/in/kalpesh-prithyani) which can be found [here.](https://www.instagram.com/p/B7hjhyApgav/)
+current build apk can be found [here.](current APK\app-release.apk)
 
 ## Current Progress
 
 Currently I have the prototype for one of the app's page i.e. the page to add alarms. The major challenge on this page was to add the neumorphic shadows as can be seen in the image
 
-<a target="_blank" href="screenshots\image.png"><img src="screenshots\image.png" title="Screenshot" width="200"></a>
+<a target="_blank" href="screenshots\image.png"><img src="screenshots\image.png" title="Screenshot" width="350"></a>
 
 ## To do:
 
