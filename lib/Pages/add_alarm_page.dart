@@ -442,20 +442,21 @@ class AlarmContent extends StatelessWidget {
         border: Border.all(color: Colors.black87, width: 0.2),
         borderRadius: const BorderRadius.all(Radius.circular(10)),
       ),
-      child: Stack(
-        children: [
-          const Text(
-            '5:50 AM',
-            style: TextStyle(color: Colors.white54),
+      child: Row(
+        children: const <Widget>[
+          Padding(
+            padding: EdgeInsets.all(10.0),
+            child: Text(
+              '5:50 AM',
+              style: TextStyle(color: Colors.white54, fontSize: 20),
+            ),
           ),
-          Center(
-            child: Container(
-              height: 50,
-              color: Colors.red,
-              child: Icon(
-                Icons.alarm_add_rounded,
-                color: Colors.white,
-              ),
+          Spacer(),
+          Padding(
+            padding: EdgeInsets.all(10),
+            child: Icon(
+              Icons.alarm_add_rounded,
+              color: Colors.white,
             ),
           ),
         ],
