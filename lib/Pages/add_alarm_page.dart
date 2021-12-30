@@ -354,6 +354,19 @@ class SideDock extends StatelessWidget {
                   ),
                 ),
               ),
+              Center(
+                child: IgnorePointer(
+                  child: Column(
+                    children: const <Widget>[
+                      SizedBox(height: 150),
+                      AlarmContent(),
+                      AlarmContent(),
+                      AlarmContent(),
+                      AlarmContent(),
+                    ],
+                  ),
+                ),
+              ),
             ],
           ),
         ),
@@ -393,23 +406,59 @@ class _AlarmContainerState extends State<AlarmContainer> {
           borderRadius: const BorderRadius.all(Radius.circular(10)),
           boxShadow: <BoxShadow>[
             BoxShadow(
-              offset: _ispressed
-                  ? const Offset(-2.5, -2.5)
-                  : const Offset(2.5, 2.5),
+              offset: _ispressed ? const Offset(-2, -2) : const Offset(2, 2),
               color: const Color(0x80000000),
               blurRadius: 2.5,
               spreadRadius: 0.5,
             ),
             BoxShadow(
-              offset: _ispressed ? Offset(2.5, 2.5) : Offset(-2.5, -2.5),
-              color: Color(0x30FFFFFF),
+              offset: _ispressed ? const Offset(2, 2) : const Offset(-2, -2),
+              color: const Color(0x30FFFFFF),
               blurRadius: 2.5,
               spreadRadius: 0.5,
             ),
           ],
-          color: Color(0xFF3A456B),
+          color: const Color(0xFF3A456B),
           //Color(0x373A456B),,
         ),
+      ),
+    );
+  }
+}
+
+class AlarmContent extends StatelessWidget {
+  const AlarmContent({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      alignment: Alignment.center,
+      height: 50,
+      margin: const EdgeInsets.all(10.0),
+      decoration: BoxDecoration(
+        //color: Colors.red,
+        border: Border.all(color: Colors.black87, width: 0.2),
+        borderRadius: const BorderRadius.all(Radius.circular(10)),
+      ),
+      child: Stack(
+        children: [
+          const Text(
+            '5:50 AM',
+            style: TextStyle(color: Colors.white54),
+          ),
+          Center(
+            child: Container(
+              height: 50,
+              color: Colors.red,
+              child: Icon(
+                Icons.alarm_add_rounded,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
