@@ -1,7 +1,8 @@
 # Clock App
 
 A flutter clock and alarm app based on an idea from [@Kalpesh Prithyani](linkedin.com/in/kalpesh-prithyani) which can be found [here.](https://www.instagram.com/p/B7hjhyApgav/)
-current build apk can be found [here.](./current APK\app-release.apk)
+
+Current build apk can be found [here](current APK/app-release.apk)
 
 ## Current Progress
 
