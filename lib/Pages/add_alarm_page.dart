@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:first_app/Provider/alarms.dart';
 import 'package:first_app/Provider/user_provider.dart';
 import 'package:first_app/Widgets/dial.dart';
 import 'package:flutter/material.dart';
@@ -295,7 +296,7 @@ class _AddAlarmPageState extends State<AddAlarmPage>
 }
 
 class SideDock extends StatelessWidget {
-  const SideDock({
+  SideDock({
     Key? key,
     required Animation<double> animation,
     required this.backgroundGradient,
@@ -306,6 +307,12 @@ class SideDock extends StatelessWidget {
   final Animation<double> _animation;
   final LinearGradient backgroundGradient;
   final BoxConstraints constraints;
+
+  final List<Alarm> _alarms = [
+    Alarm(dateTime: DateTime(2021), music: 'song1'),
+    Alarm(dateTime: DateTime(2022), music: 'song2'),
+    Alarm(dateTime: DateTime(2023), music: 'song3'),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -329,12 +336,11 @@ class SideDock extends StatelessWidget {
             children: [
               Center(
                 child: Column(
-                  children: const <Widget>[
-                    SizedBox(height: 150),
-                    AlarmContainer(),
-                    AlarmContainer(),
-                    AlarmContainer(),
-                    AlarmContainer(),
+                  children: <Widget>[
+                    ListView.builder(
+                      itemCount: _alarms.length,
+                      itemBuilder: (ctx, index) => const AlarmContainer(),
+                    ),
                   ],
                 ),
               ),
@@ -356,14 +362,14 @@ class SideDock extends StatelessWidget {
               ),
               Center(
                 child: IgnorePointer(
-                  child: Column(
-                    children: const <Widget>[
-                      SizedBox(height: 150),
-                      AlarmContent(),
-                      AlarmContent(),
-                      AlarmContent(),
-                      AlarmContent(),
-                    ],
+                  child: ListView.builder(
+                    itemCount: _alarms.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return AlarmContent(
+                        date: _alarms[index].dateTime,
+                        song: _alarms[index].music,
+                      );
+                    },
                   ),
                 ),
               ),
@@ -428,8 +434,13 @@ class _AlarmContainerState extends State<AlarmContainer> {
 
 class AlarmContent extends StatelessWidget {
   const AlarmContent({
+    required this.date,
+    required this.song,
     Key? key,
   }) : super(key: key);
+
+  final DateTime date;
+  final String song;
 
   @override
   Widget build(BuildContext context) {
@@ -442,16 +453,16 @@ class AlarmContent extends StatelessWidget {
         borderRadius: const BorderRadius.all(Radius.circular(10)),
       ),
       child: Row(
-        children: const <Widget>[
+        children: <Widget>[
           Padding(
             padding: EdgeInsets.all(10.0),
             child: Text(
-              '5:50 AM',
+              date.hour.toString() + ':' + date.minute.toString(),
               style: TextStyle(color: Colors.white54, fontSize: 20),
             ),
           ),
-          Spacer(),
-          Padding(
+          const Spacer(),
+          const Padding(
             padding: EdgeInsets.all(10),
             child: Icon(
               Icons.alarm_add_rounded,
