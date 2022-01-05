@@ -43,7 +43,7 @@ class _AddAlarmPageState extends State<AddAlarmPage>
           //
         });
       });
-    _controller.forward();
+    //_controller.forward();
   }
 
   @override
@@ -308,14 +308,11 @@ class SideDock extends StatelessWidget {
   final LinearGradient backgroundGradient;
   final BoxConstraints constraints;
 
-  final List<Alarm> _alarms = [
-    Alarm(dateTime: DateTime(2021), music: 'song1'),
-    Alarm(dateTime: DateTime(2022), music: 'song2'),
-    Alarm(dateTime: DateTime(2023), music: 'song3'),
-  ];
-
   @override
   Widget build(BuildContext context) {
+    final List<Alarm> _alarms =
+        Provider.of<Alarms>(context, listen: true).getAlarm();
+
     return Positioned(
       left: constraints.maxWidth - _animation.value * 200,
       //left: screen width - ( tween value * width od the drawer ),
@@ -329,19 +326,29 @@ class SideDock extends StatelessWidget {
           width: 200,
           alignment: Alignment.center,
           color: const Color(0xFF3A456B),
-          //decoration: BoxDecoration(
-          //  gradient: backgroundGradient,
-          //),
           child: Stack(
             children: [
-              Center(
-                child: Column(
-                  children: <Widget>[
-                    ListView.builder(
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: SizedBox(
+                  height: constraints.maxHeight - 150,
+                  child: Center(
+                    child: ListView.builder(
+                      padding: const EdgeInsets.only(bottom: 200),
                       itemCount: _alarms.length,
-                      itemBuilder: (ctx, index) => const AlarmContainer(),
+                      itemBuilder: (ctx, index) => Stack(
+                        children: [
+                          const AlarmContainer(),
+                          IgnorePointer(
+                            child: AlarmContent(
+                                isPressed: true,
+                                date: _alarms[index].dateTime,
+                                song: _alarms[index].music),
+                          )
+                        ],
+                      ),
                     ),
-                  ],
+                  ),
                 ),
               ),
               IgnorePointer(
@@ -352,24 +359,11 @@ class SideDock extends StatelessWidget {
                     gradient: LinearGradient(
                       colors: <Color>[
                         Color(0x00000000),
-                        Color(0xF0000000),
+                        Color(0xD0000000),
                       ],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),
-                  ),
-                ),
-              ),
-              Center(
-                child: IgnorePointer(
-                  child: ListView.builder(
-                    itemCount: _alarms.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return AlarmContent(
-                        date: _alarms[index].dateTime,
-                        song: _alarms[index].music,
-                      );
-                    },
                   ),
                 ),
               ),
@@ -434,11 +428,13 @@ class _AlarmContainerState extends State<AlarmContainer> {
 
 class AlarmContent extends StatelessWidget {
   const AlarmContent({
+    required this.isPressed,
     required this.date,
     required this.song,
     Key? key,
   }) : super(key: key);
 
+  final bool isPressed;
   final DateTime date;
   final String song;
 
@@ -448,25 +444,25 @@ class AlarmContent extends StatelessWidget {
       alignment: Alignment.center,
       height: 50,
       margin: const EdgeInsets.all(10.0),
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.black87, width: 0.2),
-        borderRadius: const BorderRadius.all(Radius.circular(10)),
-      ),
+      //decoration: BoxDecoration(
+      //  border: Border.all(color: Colors.black87, width: 0.2),
+      //  borderRadius: const BorderRadius.all(Radius.circular(10)),
+      //),
       child: Row(
         children: <Widget>[
           Padding(
-            padding: EdgeInsets.all(10.0),
+            padding: const EdgeInsets.all(10.0),
             child: Text(
               date.hour.toString() + ':' + date.minute.toString(),
-              style: TextStyle(color: Colors.white54, fontSize: 20),
+              style: const TextStyle(color: Colors.white54, fontSize: 20),
             ),
           ),
           const Spacer(),
-          const Padding(
-            padding: EdgeInsets.all(10),
+          Padding(
+            padding: const EdgeInsets.all(10),
             child: Icon(
               Icons.alarm_add_rounded,
-              color: Colors.white,
+              color: isPressed ? Colors.blueAccent : Colors.white,
             ),
           ),
         ],

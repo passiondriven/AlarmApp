@@ -1,10 +1,9 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:first_app/Pages/add_alarm_page.dart';
+import 'package:first_app/Provider/alarms.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import '../Provider/user_provider.dart';
@@ -29,6 +28,7 @@ void main() {
       MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (_) => UserProvider()),
+          ChangeNotifierProvider(create: (_) => Alarms()),
         ],
         child: const AlarmApp(),
       ),
