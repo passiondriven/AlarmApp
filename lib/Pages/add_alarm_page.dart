@@ -1,10 +1,10 @@
 import 'dart:math';
 
 import 'package:first_app/Provider/alarms.dart';
+import 'package:first_app/modals/alarm_modal.dart';
 import 'package:first_app/Provider/user_provider.dart';
 import 'package:first_app/Widgets/dial.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -77,36 +77,6 @@ class _AddAlarmPageState extends State<AddAlarmPage>
   double y = 0;
   double z = 0;
 
-  /* final AppBar appbar = AppBar(
-    //toolbarHeight: 30,
-    foregroundColor: Colors.white,
-    centerTitle: true,
-    title: Text(
-      'ADD ALARM',
-      style: GoogleFonts.jost(),
-    ),
-    elevation: 0,
-    backgroundColor: Colors.transparent,
-    leading: IconButton(
-      splashRadius: 23,
-      icon: const Icon(
-        Icons.arrow_back,
-      ),
-      onPressed: () {},
-    ),
-    actions: <Widget>[
-      Container(
-        margin: const EdgeInsets.only(right: 20),
-        alignment: Alignment.center,
-        child: IconButton(
-          splashRadius: 23,
-          icon: Icon(Icons.menu),
-          onPressed: _onPressed(),
-        ),
-      ),
-    ],
-  );
-*/
   @override
   Widget build(BuildContext context) {
     final _titleNotifier = Provider.of<UserProvider>(context, listen: true);

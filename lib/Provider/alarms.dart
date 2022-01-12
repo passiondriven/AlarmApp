@@ -1,11 +1,5 @@
+import 'package:first_app/modals/alarm_modal.dart';
 import 'package:flutter/foundation.dart';
-
-class Alarm {
-  late final DateTime dateTime;
-  late final String music;
-  bool selected;
-  Alarm({required this.dateTime, required this.music, required this.selected});
-}
 
 class Alarms extends ChangeNotifier {
   final List<Alarm> _alarmList = [

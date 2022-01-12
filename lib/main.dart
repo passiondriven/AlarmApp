@@ -1,12 +1,13 @@
 import 'dart:async';
 
 import 'package:first_app/Pages/add_alarm_page.dart';
-import 'package:first_app/Provider/alarms.dart';
+import 'package:first_app/Pages/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import '../Provider/user_provider.dart';
+import 'Provider/alarms.dart';
 
 Future changeColor() async {
   const style = SystemUiOverlayStyle(
@@ -44,9 +45,10 @@ class AlarmApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Alarm Clock App',
-      initialRoute: AddAlarmPage.routeName,
+      initialRoute: HomePage.routeName,
       routes: {
-        AddAlarmPage.routeName: (context) => AddAlarmPage(),
+        AddAlarmPage.routeName: (context) => const AddAlarmPage(),
+        HomePage.routeName: (context) => const HomePage(),
       },
     );
   }
